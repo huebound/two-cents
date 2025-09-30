@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Two Cents
+
+This project uses [Next.js](https://nextjs.org) with the App Router.
 
 ## Getting Started
 
-First, run the development server:
+1. Ensure you're using Node 22.15.0 (`nvm use 22.15.0`).
+2. Install dependencies with your preferred package manager (`pnpm install`).
+3. Start the development server: `pnpm dev`
+4. Visit [http://localhost:3000](http://localhost:3000) for the landing page and [http://localhost:3000/instruments](http://localhost:3000/instruments) for the Supabase example.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Supabase Setup
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Create or reuse a Supabase project.
+2. Copy `.env.example` to `.env.local` and keep the values that were provisioned for this project:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   ```bash
+   cp .env.example .env.local
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   These values expose the public anonymous key which is safe to ship to the browser as long as Row Level Security policies are in place.
 
-## Learn More
+3. In the Supabase SQL editor, create the sample table and RLS policy:
 
-To learn more about Next.js, take a look at the following resources:
+   ```sql
+   create table if not exists instruments (
+     id bigint primary key generated always as identity,
+     name text not null
+   );
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   insert into instruments (name) values
+     ('violin'),
+     ('viola'),
+     ('cello')
+   on conflict do nothing;
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   alter table instruments enable row level security;
 
-## Deploy on Vercel
+   create policy if not exists "public can read instruments"
+   on public.instruments
+   for select to anon
+   using (true);
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Install the Supabase client packages (network access required):
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   ```bash
+   pnpm add @supabase/supabase-js @supabase/ssr
+   ```
+
+5. Restart the development server if it was running so it picks up the new environment variables.
+
+## Project Structure
+
+- `app/` – Next.js App Router pages and layouts.
+- `app/instruments/page.tsx` – Example page that queries Supabase and prints JSON.
+- `utils/supabase/server.ts` – Server-side Supabase client wired to share cookies between requests.
+- `.env.example` – Template for Supabase environment variables.
+
+## Troubleshooting
+
+- If package installation fails with a `URL.canParse` or `ERR_PNPM_UNEXPECTED_STORE` error, run `nvm use 22.15.0` before running any `pnpm` command and reinstall dependencies (`pnpm install`).
+- Network access is required the first time you install Supabase packages; if running in a restricted environment, request access or install them manually when you have connectivity.
+
