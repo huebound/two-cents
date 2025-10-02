@@ -38,7 +38,7 @@ export default function OnboardingPage() {
 
       // Redirect to home
       router.push("/home");
-    } catch (err) {
+    } catch {
       setError("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
@@ -50,7 +50,8 @@ export default function OnboardingPage() {
       <main className="flex w-full max-w-md flex-col items-center gap-8 px-4 text-center">
         <h1 className="text-4xl">Welcome to Two Cents Club!</h1>
         <p className="text-lg">
-          Let's get you set up. This is where your onboarding flow will go.
+          Let&apos;s get you set up. This is where your onboarding flow will
+          go.
         </p>
 
         {error ? (
