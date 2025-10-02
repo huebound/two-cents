@@ -33,14 +33,15 @@ export function AppNavbar({ firstName }: AppNavbarProps) {
           >
             <Bell className="h-5 w-5" />
           </button>
-          <span
+          <Link
+            href="/profile"
             className={cn(
-              "flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 bg-gray-100 text-sm font-semibold text-gray-700",
+              "flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 bg-gray-100 text-sm font-semibold text-gray-700 transition hover:border-black hover:text-black",
             )}
             aria-label="Profile"
           >
             {profileInitial}
-          </span>
+          </Link>
         </nav>
       </div>
     </header>

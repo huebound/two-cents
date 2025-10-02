@@ -4,6 +4,7 @@ const CLASS_SELECT_BASE = `
   id,
   host_id,
   title,
+  image_url,
   level,
   weeks,
   total_spots,
@@ -26,6 +27,7 @@ const CLASS_SELECT_WITH_JOIN = `
   id,
   host_id,
   title,
+  image_url,
   level,
   weeks,
   total_spots,
@@ -133,6 +135,7 @@ export type ClassRecord = {
   id: string;
   host_id: string | null;
   title: string;
+  image_url: string | null;
   level: "Beginner" | "Intermediate" | "Advanced";
   weeks: number;
   total_spots: number;

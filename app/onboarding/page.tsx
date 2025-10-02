@@ -5,19 +5,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createClient as createSupabaseClient } from "@/utils/supabase/client";
+import { PROFILE_TOPIC_OPTIONS } from "@/lib/profile-options";
 import { Search } from "lucide-react";
-
-const TOPICS = [
-  "Physics",
-  "Candlemaking",
-  "Flower Arranging",
-  "Fiction Writing",
-  "Nonfiction Writing",
-  "Crosswords",
-  "Journaling",
-  "Dance",
-  "Film",
-];
 
 const PERSONALITY_QUESTIONS = [
   {
@@ -166,7 +155,7 @@ export default function OnboardingPage() {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {TOPICS.map((topic) => (
+            {PROFILE_TOPIC_OPTIONS.map((topic) => (
               <button
                 key={topic}
                 onClick={() => toggleTopic(topic, curiousAbout, setCuriousAbout)}
@@ -205,7 +194,7 @@ export default function OnboardingPage() {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            {TOPICS.map((topic) => (
+            {PROFILE_TOPIC_OPTIONS.map((topic) => (
               <button
                 key={topic}
                 onClick={() => toggleTopic(topic, knowledge, setKnowledge)}

@@ -25,6 +25,7 @@ export async function createClassAction(
   }
 
   const title = formData.get("title")?.toString().trim() ?? "";
+  const imageUrl = formData.get("imageUrl")?.toString().trim() ?? "";
   const weeks = Number(formData.get("weeks"));
   const totalSpots = Number(formData.get("totalSpots"));
   const level = formData.get("level")?.toString() ?? "";
@@ -105,6 +106,7 @@ export async function createClassAction(
     .insert({
       host_id: user.id,
       title,
+      image_url: imageUrl.length > 0 ? imageUrl : null,
       level,
       weeks,
       total_spots: totalSpots,

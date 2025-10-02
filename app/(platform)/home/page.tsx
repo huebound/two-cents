@@ -73,6 +73,7 @@ export default async function HomePage() {
                   key={classItem.id}
                   id={classItem.id}
                   title={classItem.title}
+                  imageUrl={classItem.image_url}
                   startDate={classItem.start_date}
                   startTime={classItem.start_time}
                   endTime={classItem.end_time}

@@ -1,9 +1,10 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ImageUpload } from "@/components/image-upload";
 import { cn } from "@/lib/utils";
 import { createClassAction, type TeachFormState } from "./actions";
 
@@ -12,6 +13,7 @@ const initialState: TeachFormState = { status: "idle" };
 export function TeachForm() {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(createClassAction, initialState);
+  const [imageUrl, setImageUrl] = useState<string>("");
 
   useEffect(() => {
     if (state.status === "success") {
@@ -25,6 +27,12 @@ export function TeachForm() {
         <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
           Title
           <Input name="title" placeholder="Crossword Lab: Build your puzzle skills" required />
+        </label>
+
+        <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
+          Class image
+          <ImageUpload onUploadComplete={setImageUrl} currentImage={imageUrl} />
+          <input type="hidden" name="imageUrl" value={imageUrl} />
         </label>
 
         <div className="grid gap-4 sm:grid-cols-2">

@@ -6,8 +6,10 @@ import { formatDate, formatDateRange, formatTimeRange } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { updateClassDetailsAction, type UpdateClassFormState } from "./update-class-action";
+import { deleteClassAction, type DeleteClassState } from "./delete-class-action";
 
 const INITIAL_UPDATE_STATE: UpdateClassFormState = { status: "idle" };
+const INITIAL_DELETE_STATE: DeleteClassState = { status: "idle" };
 
 type UpcomingSession = {
   sessionId: string;
@@ -213,6 +215,11 @@ function TeachingEditor({ classItem }: { classItem: TeachingActiveClass }) {
     updateClassDetailsAction,
     INITIAL_UPDATE_STATE,
   );
+  const [deleteState, deleteAction, isDeleting] = useActionState(
+    deleteClassAction,
+    INITIAL_DELETE_STATE,
+  );
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -279,15 +286,54 @@ function TeachingEditor({ classItem }: { classItem: TeachingActiveClass }) {
         {state.status === "error" ? (
           <p className="text-sm text-red-600">{state.message}</p>
         ) : null}
-                <div className="flex items-center gap-3">
-          <Button type="submit" disabled={isPending}>
-            {isPending ? "Saving..." : "Save changes"}
-          </Button>
-          {isPending ? null : state.status === "success" ? (
-            <span className="text-sm text-emerald-600">Saved.</span>
+
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <Button type="submit" disabled={isPending || isDeleting}>
+              {isPending ? "Saving..." : "Save changes"}
+            </Button>
+            {isPending ? null : state.status === "success" ? (
+              <span className="text-sm text-emerald-600">Saved.</span>
+            ) : null}
+          </div>
+
+          {!showDeleteConfirm ? (
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={() => setShowDeleteConfirm(true)}
+              disabled={isPending || isDeleting}
+            >
+              Delete class
+            </Button>
           ) : null}
         </div>
       </form>
+
+      {showDeleteConfirm ? (
+        <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4">
+          <p className="mb-3 text-sm font-medium text-red-900">
+            Are you sure you want to delete this class? This action cannot be undone.
+          </p>
+          <form action={deleteAction} className="flex items-center gap-3">
+            <input type="hidden" name="classId" value={classItem.id} />
+            <Button type="submit" variant="destructive" disabled={isDeleting}>
+              {isDeleting ? "Deleting..." : "Yes, delete"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowDeleteConfirm(false)}
+              disabled={isDeleting}
+            >
+              Cancel
+            </Button>
+          </form>
+          {deleteState.status === "error" ? (
+            <p className="mt-2 text-sm text-red-600">{deleteState.message}</p>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }
