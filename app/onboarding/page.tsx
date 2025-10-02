@@ -151,7 +151,7 @@ export default function OnboardingPage() {
           <h1 className="text-xl font-medium">What are you curious about?</h1>
 
           <div className="relative">
-            <Input placeholder="Search..." className="pr-10" />
+            <Input placeholder="Search..." className="pr-10" autoComplete="off" />
             <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           </div>
 
@@ -190,7 +190,7 @@ export default function OnboardingPage() {
           <h1 className="text-xl font-medium">What do you know?</h1>
 
           <div className="relative">
-            <Input placeholder="Search..." className="pr-10" />
+            <Input placeholder="Search..." className="pr-10" autoComplete="off" />
             <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           </div>
 

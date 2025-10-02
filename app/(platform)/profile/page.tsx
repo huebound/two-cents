@@ -13,7 +13,7 @@ export default async function ProfilePage() {
 
   const { data: profile, error } = await supabase
     .from("profiles")
-    .select("first_name, last_name, username, knowledge, want_to_learn_role")
+    .select("first_name, last_name, username, knowledge, want_to_learn")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -21,14 +21,14 @@ export default async function ProfilePage() {
     throw new Error(error.message);
   }
 
-  type Profile = { first_name: string | null; last_name: string | null; username: string | null; knowledge: string[] | null; want_to_learn_role: string | null };
+  type Profile = { first_name: string | null; last_name: string | null; username: string | null; knowledge: string[] | null; want_to_learn: string[] | null };
   const firstName = (profile as Profile | null)?.first_name?.trim() || user.user_metadata?.first_name?.trim() || "";
   const lastName = (profile as Profile | null)?.last_name?.trim() || user.user_metadata?.last_name?.trim() || "";
   const username = (profile as Profile | null)?.username?.trim() || null;
   const knowledgeValues = Array.isArray((profile as Profile | null)?.knowledge) ? (profile as Profile | null)!.knowledge! : [];
   const knowledge = knowledgeValues.filter((value): value is string => typeof value === "string");
-  const wantToLearnRole =
-    profile && typeof (profile as Profile).want_to_learn_role === "string" ? (profile as Profile).want_to_learn_role : null;
+  const wantToLearnValues = Array.isArray((profile as Profile | null)?.want_to_learn) ? (profile as Profile | null)!.want_to_learn! : [];
+  const wantToLearn = wantToLearnValues.filter((value): value is string => typeof value === "string");
 
   return (
     <div className="mx-auto max-w-2xl space-y-8">
@@ -44,7 +44,7 @@ export default async function ProfilePage() {
         lastName={lastName}
         username={username}
         knowledge={knowledge}
-        wantToLearnRole={wantToLearnRole}
+        wantToLearn={wantToLearn}
       />
     </div>
   );

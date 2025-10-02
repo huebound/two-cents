@@ -14,12 +14,29 @@ export function TeachForm() {
   const router = useRouter();
   const [state, formAction, isPending] = useActionState(createClassAction, initialState);
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [weeks, setWeeks] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
+  const [startTime, setStartTime] = useState<string>("");
+  const [endTime, setEndTime] = useState<string>("");
 
   useEffect(() => {
     if (state.status === "success") {
       router.push(`/classes/${state.classId}`);
     }
   }, [state, router]);
+
+  useEffect(() => {
+    if (startDate && weeks) {
+      const start = new Date(startDate);
+      const weeksNum = parseInt(weeks, 10);
+      if (!isNaN(weeksNum) && weeksNum > 0) {
+        const end = new Date(start);
+        end.setDate(end.getDate() + weeksNum * 7);
+        setEndDate(end.toISOString().split("T")[0]);
+      }
+    }
+  }, [startDate, weeks]);
 
   return (
     <form action={formAction} className="space-y-8">
@@ -38,7 +55,15 @@ export function TeachForm() {
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
             Weeks
-            <Input name="weeks" type="number" min={1} step={1} required />
+            <Input
+              name="weeks"
+              type="number"
+              min={1}
+              step={1}
+              required
+              value={weeks}
+              onChange={(e) => setWeeks(e.target.value)}
+            />
           </label>
           <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
             Total spots
@@ -64,22 +89,46 @@ export function TeachForm() {
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
             Start date
-            <Input name="startDate" type="date" required />
+            <Input
+              name="startDate"
+              type="date"
+              required
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
           </label>
           <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
             End date
-            <Input name="endDate" type="date" required />
+            <Input
+              name="endDate"
+              type="date"
+              required
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
           </label>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
             Start time
-            <Input name="startTime" type="time" required />
+            <Input
+              name="startTime"
+              type="time"
+              required
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+            />
           </label>
           <label className="flex flex-col gap-2 text-sm font-medium text-gray-700">
             End time
-            <Input name="endTime" type="time" required />
+            <Input
+              name="endTime"
+              type="time"
+              required
+              value={endTime}
+              onChange={(e) => setEndTime(e.target.value)}
+            />
           </label>
         </div>
 

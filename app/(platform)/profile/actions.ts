@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
-import { LEARN_ROLE_OPTIONS, PROFILE_TOPIC_OPTIONS } from "@/lib/profile-options";
+import { PROFILE_TOPIC_OPTIONS } from "@/lib/profile-options";
 
 export type ProfileFormState =
   | { status: "idle" }
@@ -12,7 +12,6 @@ export type ProfileFormState =
 const INITIAL_STATE: ProfileFormState = { status: "idle" };
 
 const TOPIC_SET = new Set(PROFILE_TOPIC_OPTIONS);
-const ROLE_SET = new Set(LEARN_ROLE_OPTIONS);
 
 export async function updateProfileAction(
   _prevState: ProfileFormState = INITIAL_STATE,
@@ -31,12 +30,11 @@ export async function updateProfileAction(
   const lastNameRaw = formData.get("lastName")?.toString() ?? "";
   const usernameRaw = formData.get("username")?.toString() ?? "";
   const knowledgeSelected = formData.getAll("knowledge").map((value) => value.toString());
-  const wantRoleRaw = formData.get("wantToLearnRole")?.toString() ?? "";
+  const wantToLearnSelected = formData.getAll("wantToLearn").map((value) => value.toString());
 
   const firstName = firstNameRaw.trim();
   const lastName = lastNameRaw.trim();
   const username = usernameRaw.trim() || null;
-  const wantRole = wantRoleRaw.trim() ? wantRoleRaw.trim() : null;
 
   if (!firstName || !lastName) {
     return { status: "error", message: "Name cannot be empty." };
@@ -46,9 +44,9 @@ export async function updateProfileAction(
     new Set(knowledgeSelected.filter((topic) => TOPIC_SET.has(topic as never))),
   );
 
-  if (wantRole && !ROLE_SET.has(wantRole as never)) {
-    return { status: "error", message: "Select a valid learning role." };
-  }
+  const filteredWantToLearn = Array.from(
+    new Set(wantToLearnSelected.filter((topic) => TOPIC_SET.has(topic as never))),
+  );
 
   const { data: updateResult, error } = await supabase
     .from("profiles")
@@ -59,7 +57,7 @@ export async function updateProfileAction(
         last_name: lastName,
         username,
         knowledge: filteredKnowledge,
-        want_to_learn_role: wantRole,
+        want_to_learn: filteredWantToLearn,
       } as never,
       { onConflict: "id" },
     )
