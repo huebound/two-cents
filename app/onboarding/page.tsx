@@ -46,7 +46,8 @@ export default function OnboardingPage() {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        setError("No user found. Please sign in again.");
+        await supabase.auth.signOut();
+        router.push("/");
         return;
       }
 
@@ -63,7 +64,7 @@ export default function OnboardingPage() {
           curious_about: curiousAbout,
           knowledge: knowledge,
           personality_answers: personalityAnswers,
-        }, { onConflict: "id" });
+        } as never, { onConflict: "id" });
 
       if (profileError) {
         setError(profileError.message);

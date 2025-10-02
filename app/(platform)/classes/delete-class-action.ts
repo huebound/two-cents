@@ -46,7 +46,7 @@ export async function deleteClassAction(
     return { status: "error", message: "Class not found." };
   }
 
-  if (classData.host_id !== user.id) {
+  if ((classData as { host_id: string | null }).host_id !== user.id) {
     return { status: "error", message: "You can only delete classes you host." };
   }
 

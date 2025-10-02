@@ -1,4 +1,5 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/types/supabase";
+import { createClient as createServerClient } from "@/utils/supabase/server";
 
 const CLASS_SELECT_BASE = `
   id,
@@ -129,7 +130,7 @@ export function getClassProgress(
   };
 }
 
-type Supabase = SupabaseClient;
+type Supabase = Awaited<ReturnType<typeof createServerClient>>;
 
 export type ClassRecord = {
   id: string;

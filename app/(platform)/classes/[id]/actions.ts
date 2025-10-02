@@ -39,7 +39,7 @@ export async function registerForClassAction(
     .insert({
       class_id: classId,
       user_id: user.id,
-    });
+    } as never);
 
   if (error) {
     if (error.code === "23505") {

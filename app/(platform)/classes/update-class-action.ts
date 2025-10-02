@@ -49,7 +49,7 @@ export async function updateClassDetailsAction(
       requirements: requirementsRaw.length > 0 ? requirementsRaw : null,
       host_blurb: hostBlurb.length > 0 ? hostBlurb : null,
       description,
-    })
+    } as never)
     .eq("id", classId)
     .select("id")
     .maybeSingle();

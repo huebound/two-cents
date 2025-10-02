@@ -61,7 +61,7 @@ export default async function ClassesPage() {
 
   const attendedHistory = attendedClasses.map((classItem) => {
     const progress = getClassProgress(classItem);
-    const status = progress.status === "completed" ? "Completed" : "In Progress";
+    const status: "Completed" | "In Progress" = progress.status === "completed" ? "Completed" : "In Progress";
 
     return {
       id: classItem.id,

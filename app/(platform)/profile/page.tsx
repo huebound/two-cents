@@ -21,13 +21,14 @@ export default async function ProfilePage() {
     throw new Error(error.message);
   }
 
-  const firstName = profile?.first_name?.trim() || user.user_metadata?.first_name?.trim() || "";
-  const lastName = profile?.last_name?.trim() || user.user_metadata?.last_name?.trim() || "";
-  const username = profile?.username?.trim() || null;
-  const knowledgeValues = Array.isArray(profile?.knowledge) ? profile.knowledge : [];
+  type Profile = { first_name: string | null; last_name: string | null; username: string | null; knowledge: string[] | null; want_to_learn_role: string | null };
+  const firstName = (profile as Profile | null)?.first_name?.trim() || user.user_metadata?.first_name?.trim() || "";
+  const lastName = (profile as Profile | null)?.last_name?.trim() || user.user_metadata?.last_name?.trim() || "";
+  const username = (profile as Profile | null)?.username?.trim() || null;
+  const knowledgeValues = Array.isArray((profile as Profile | null)?.knowledge) ? (profile as Profile | null)!.knowledge! : [];
   const knowledge = knowledgeValues.filter((value): value is string => typeof value === "string");
   const wantToLearnRole =
-    profile && typeof profile.want_to_learn_role === "string" ? profile.want_to_learn_role : null;
+    profile && typeof (profile as Profile).want_to_learn_role === "string" ? (profile as Profile).want_to_learn_role : null;
 
   return (
     <div className="mx-auto max-w-2xl space-y-8">

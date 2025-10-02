@@ -43,10 +43,10 @@ export async function updateProfileAction(
   }
 
   const filteredKnowledge = Array.from(
-    new Set(knowledgeSelected.filter((topic) => TOPIC_SET.has(topic))),
+    new Set(knowledgeSelected.filter((topic) => TOPIC_SET.has(topic as never))),
   );
 
-  if (wantRole && !ROLE_SET.has(wantRole)) {
+  if (wantRole && !ROLE_SET.has(wantRole as never)) {
     return { status: "error", message: "Select a valid learning role." };
   }
 
@@ -60,7 +60,7 @@ export async function updateProfileAction(
         username,
         knowledge: filteredKnowledge,
         want_to_learn_role: wantRole,
-      },
+      } as never,
       { onConflict: "id" },
     )
     .select("id")

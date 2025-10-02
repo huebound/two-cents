@@ -25,8 +25,8 @@ export default async function HomePage() {
   ]);
 
   const profileFirstName =
-    typeof profile?.first_name === "string" && profile.first_name.trim().length > 0
-      ? profile.first_name.trim()
+    typeof (profile as { first_name: string | null } | null)?.first_name === "string" && profile && (profile as { first_name: string | null }).first_name && (profile as { first_name: string }).first_name.trim().length > 0
+      ? (profile as { first_name: string }).first_name.trim()
       : undefined;
   const metadataFirstName =
     typeof user.user_metadata?.first_name === "string" && user.user_metadata.first_name.trim().length > 0

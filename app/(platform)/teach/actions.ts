@@ -121,7 +121,7 @@ export async function createClassAction(
       requirements,
       host_blurb: hostBlurb,
       description,
-    })
+    } as never)
     .select("id")
     .single();
 
@@ -129,8 +129,10 @@ export async function createClassAction(
     return { status: "error", message: error?.message ?? "Could not create class." };
   }
 
-  revalidatePath("/home");
-  revalidatePath(`/classes/${data.id}`);
+  const classId = (data as { id: string }).id;
 
-  return { status: "success", classId: data.id };
+  revalidatePath("/home");
+  revalidatePath(`/classes/${classId}`);
+
+  return { status: "success", classId };
 }
