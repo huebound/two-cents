@@ -61,4 +61,3 @@ This project uses [Next.js](https://nextjs.org) with the App Router.
 
 - If package installation fails with a `URL.canParse` or `ERR_PNPM_UNEXPECTED_STORE` error, run `nvm use 22.15.0` before running any `pnpm` command and reinstall dependencies (`pnpm install`).
 - Network access is required the first time you install Supabase packages; if running in a restricted environment, request access or install them manually when you have connectivity.
-
