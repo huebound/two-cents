@@ -61,17 +61,20 @@ export default function OnboardingPage() {
         return;
       }
 
+      const normalizedFirstName = firstName.trim();
+      const normalizedLastName = lastName.trim();
+
       // Update profile in database
       const { error: profileError } = await supabase
         .from("profiles")
-        .update({
-          first_name: firstName,
-          last_name: lastName,
+        .upsert({
+          id: user.id,
+          first_name: normalizedFirstName,
+          last_name: normalizedLastName,
           curious_about: curiousAbout,
           knowledge: knowledge,
           personality_answers: personalityAnswers,
-        })
-        .eq("id", user.id);
+        }, { onConflict: "id" });
 
       if (profileError) {
         setError(profileError.message);
@@ -80,7 +83,7 @@ export default function OnboardingPage() {
 
       // Mark as onboarded in user metadata
       const { error: metadataError } = await supabase.auth.updateUser({
-        data: { onboarded: true },
+        data: { onboarded: true, first_name: normalizedFirstName, last_name: normalizedLastName },
       });
 
       if (metadataError) {
@@ -141,7 +144,7 @@ export default function OnboardingPage() {
           <Button
             onClick={nextStep}
             className="mt-4 rounded-full bg-black px-8 py-2 text-white hover:bg-gray-800"
-            disabled={!firstName || !lastName}
+            disabled={firstName.trim().length === 0 || lastName.trim().length === 0}
           >
             Continue
           </Button>
@@ -288,9 +291,9 @@ export default function OnboardingPage() {
                 }
               }}
               className="rounded-full border-2 border-black bg-white px-6 py-2 text-black hover:bg-gray-100"
-              disabled={personalityAnswers[currentQuestion] === undefined}
+              disabled={isLoading || personalityAnswers[currentQuestion] === undefined}
             >
-              Continue
+              {isLoading && currentQuestion === PERSONALITY_QUESTIONS.length - 1 ? "Finishing..." : "Continue"}
             </Button>
           </div>
 

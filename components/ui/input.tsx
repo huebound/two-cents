@@ -2,7 +2,11 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+type InputProps = React.ComponentProps<"input">
+
+function Input({ className, type, value, defaultValue, ...props }: InputProps) {
+  const controlled = value !== undefined
+
   return (
     <input
       type={type}
@@ -14,6 +18,8 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
         className
       )}
       {...props}
+      {...(controlled ? { value } : {})}
+      {...(!controlled && defaultValue !== undefined ? { defaultValue } : {})}
     />
   )
 }
