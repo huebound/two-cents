@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,7 @@ const OTP_LENGTH = 6;
 type Step = "landing" | "email" | "otp" | "success";
 
 export default function Home() {
+  const router = useRouter();
   const supabase = createSupabaseClient();
   const [step, setStep] = useState<Step>("landing");
   const [email, setEmail] = useState("");
@@ -32,8 +34,16 @@ export default function Home() {
         data: { session },
       } = await supabase.auth.getSession();
       if (session) {
-        setStep("success");
-        setStatusMessage("You're in. Welcome to Two Cents Club!");
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
+        // Check if user has completed onboarding
+        if (user?.user_metadata?.onboarded) {
+          router.push("/home");
+        } else {
+          router.push("/onboarding");
+        }
       }
     };
     void checkAuth();
@@ -94,8 +104,16 @@ export default function Home() {
       return;
     }
 
-    setStep("success");
-    setStatusMessage("You're in. Welcome to Two Cents Club!");
+    // Check if user has completed onboarding
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user?.user_metadata?.onboarded) {
+      router.push("/home");
+    } else {
+      router.push("/onboarding");
+    }
   };
 
   const handleReset = () => {

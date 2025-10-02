@@ -1,63 +1,50 @@
 # Two Cents
 
-This project uses [Next.js](https://nextjs.org) with the App Router.
+A Next.js app with Supabase authentication and onboarding flow.
 
 ## Getting Started
 
-1. Ensure you're using Node 22.15.0 (`nvm use 22.15.0`).
-2. Install dependencies with your preferred package manager (`pnpm install`).
-3. Start the development server: `pnpm dev`
-4. Visit [http://localhost:3000](http://localhost:3000) for the landing page and [http://localhost:3000/instruments](http://localhost:3000/instruments) for the Supabase example.
+1. Ensure you're using Node 22.15.0 (`nvm use 22.15.0`)
+2. Install dependencies: `pnpm install`
+3. Copy `.env.example` to `.env.local` and add your Supabase credentials
+4. Start the development server: `pnpm dev`
+5. Visit [http://localhost:3000](http://localhost:3000)
 
-## Supabase Setup
+## Authentication Flow
 
-1. Create or reuse a Supabase project.
-2. Copy `.env.example` to `.env.local` and keep the values that were provisioned for this project:
+- **New users** → Email OTP authentication → Onboarding → Home
+- **Returning users** → Email OTP authentication → Home (if onboarded)
 
-   ```bash
-   cp .env.example .env.local
-   ```
+User onboarding status is stored in `auth.users.user_metadata.onboarded`.
 
-   These values expose the public anonymous key which is safe to ship to the browser as long as Row Level Security policies are in place.
+## Supabase Type Generation
 
-3. In the Supabase SQL editor, create the sample table and RLS policy:
+Generate TypeScript types from your Supabase schema for full type safety:
 
-   ```sql
-   create table if not exists instruments (
-     id bigint primary key generated always as identity,
-     name text not null
-   );
+```bash
+# Generate types (run after schema changes)
+npx supabase gen types typescript --project-id zohzyxmyacoqemmxfkgp > types/supabase.ts
+```
 
-   insert into instruments (name) values
-     ('violin'),
-     ('viola'),
-     ('cello')
-   on conflict do nothing;
+Then import and use:
 
-   alter table instruments enable row level security;
+```typescript
+import { Database } from '@/types/supabase'
 
-   create policy if not exists "public can read instruments"
-   on public.instruments
-   for select to anon
-   using (true);
-   ```
-
-4. Install the Supabase client packages (network access required):
-
-   ```bash
-   pnpm add @supabase/supabase-js @supabase/ssr
-   ```
-
-5. Restart the development server if it was running so it picks up the new environment variables.
+type User = Database['public']['Tables']['users']['Row']
+```
 
 ## Project Structure
 
-- `app/` – Next.js App Router pages and layouts.
-- `app/instruments/page.tsx` – Example page that queries Supabase and prints JSON.
-- `utils/supabase/server.ts` – Server-side Supabase client wired to share cookies between requests.
-- `.env.example` – Template for Supabase environment variables.
+- `app/page.tsx` – Landing page and authentication flow
+- `app/onboarding/page.tsx` – Onboarding screen for new users
+- `app/home/page.tsx` – Protected home page with server-side auth
+- `utils/supabase/server.ts` – Server-side Supabase client
+- `utils/supabase/client.ts` – Client-side Supabase client
 
-## Troubleshooting
+## Tech Stack
 
-- If package installation fails with a `URL.canParse` or `ERR_PNPM_UNEXPECTED_STORE` error, run `nvm use 22.15.0` before running any `pnpm` command and reinstall dependencies (`pnpm install`).
-- Network access is required the first time you install Supabase packages; if running in a restricted environment, request access or install them manually when you have connectivity.
+- **Framework:** Next.js 15 (App Router, Turbopack)
+- **Auth/Database:** Supabase
+- **Styling:** Tailwind CSS 4
+- **UI Components:** Radix UI + shadcn/ui
