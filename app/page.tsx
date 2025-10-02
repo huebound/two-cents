@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +17,7 @@ const OTP_LENGTH = 6;
 type Step = "landing" | "email" | "otp" | "success";
 
 export default function Home() {
-  const supabase = useMemo(() => createSupabaseClient(), []);
+  const supabase = createSupabaseClient();
   const [step, setStep] = useState<Step>("landing");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
