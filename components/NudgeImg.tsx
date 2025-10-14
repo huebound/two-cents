@@ -47,11 +47,11 @@ export default function NudgeImg({
     zIndex: z,
   };
 
-  const vars: React.CSSProperties & Record<string, any> = {};
-  if (tx !== undefined) (vars as any)["--tx"] = toCss(tx);
-  if (ty !== undefined) (vars as any)["--ty"] = toCss(ty);
-  if (rot !== undefined) (vars as any)["--rot"] = typeof rot === "number" ? `${rot}deg` : rot;
-  if (sc !== undefined) (vars as any)["--sc"] = typeof sc === "number" ? String(sc) : sc;
+  const vars: React.CSSProperties & Record<`--${string}`, string | undefined> = {};
+  if (tx !== undefined) vars["--tx"] = toCss(tx);
+  if (ty !== undefined) vars["--ty"] = toCss(ty);
+  if (rot !== undefined) vars["--rot"] = typeof rot === "number" ? `${rot}deg` : rot;
+  if (sc !== undefined) vars["--sc"] = typeof sc === "number" ? String(sc) : sc;
 
   return (
     <img
