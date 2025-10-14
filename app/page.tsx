@@ -205,8 +205,7 @@ export default function Home() {
                 src="/images/2C-Landing-Assets/penny.png"
                 alt=""
                 className="hero-nudge pointer-events-none absolute z-10 w-[120px] sm:w-[128px] lg:w-[152px]"
-                style={{ top: "10%", left: "8%", filter: "drop-shadow(0 18px 32px rgba(0,0,0,0.18))", //@ts-ignore
-                  ['--tx' as any]: '50px', ['--ty' as any]: '0px', ['--rot' as any]: '-10deg', ['--sc' as any]: '1' }}
+                style={{ top: "10%", left: "8%", filter: "drop-shadow(0 18px 32px rgba(0,0,0,0.18))", '--tx': '50px', '--ty': '0px', '--rot': '-10deg', '--sc': '1' } as React.CSSProperties}
               />
               {/* star moved to the paper wrapper below so it follows the paper */}
               {/* cd moved to the baseline row */}
@@ -230,32 +229,28 @@ export default function Home() {
                     src="/images/2C-Landing-Assets/compass.png"
                     alt=""
                     className="hero-nudge w-[120px] lg:w-[140px]"
-                    style={{ filter: "drop-shadow(0 18px 30px rgba(0,0,0,0.18))", //@ts-ignore
-                      ['--tx' as any]: '-20px', ['--ty' as any]: '80px', ['--rot' as any]: '6deg', ['--sc' as any]: '1.5' }}
+                    style={{ filter: "drop-shadow(0 18px 30px rgba(0,0,0,0.18))", '--tx': '-20px', '--ty': '80px', '--rot': '6deg', '--sc': '1.5' } as React.CSSProperties}
                   />
                   {/* bowl */}
                   <img
                     src="/images/2C-Landing-Assets/bowl.png"
                     alt=""
                     className="hero-nudge w-[200px] lg:w-[240px]"
-                    style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.14))", //@ts-ignore
-                      ['--tx' as any]: '-30px', ['--ty' as any]: '80px', ['--rot' as any]: '0deg', ['--sc' as any]: '1.25' }}
+                    style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.14))", '--tx': '-30px', '--ty': '80px', '--rot': '0deg', '--sc': '1.25' } as React.CSSProperties}
                   />
                   {/* pen */}
                   <img
                     src="/images/2C-Landing-Assets/pen.png"
                     alt=""
                     className="hero-nudge w-[80px] lg:w-[96px]"
-                    style={{ filter: "drop-shadow(0 16px 28px rgba(0,0,0,0.14))", //@ts-ignore
-                      ['--tx' as any]: '-50px', ['--ty' as any]: '-6px', ['--rot' as any]: '-2deg', ['--sc' as any]: '1.25' }}
+                    style={{ filter: "drop-shadow(0 16px 28px rgba(0,0,0,0.14))", '--tx': '-50px', '--ty': '-6px', '--rot': '-2deg', '--sc': '1.25' } as React.CSSProperties}
                   />
                   {/* cd */}
                   <img
                     src="/images/2C-Landing-Assets/cd.png"
                     alt=""
                     className="hero-nudge w-[180px] lg:w-[220px]"
-                    style={{ filter: "drop-shadow(0 24px 36px rgba(0,0,0,0.16))", //@ts-ignore
-                      ['--tx' as any]: '-120px', ['--ty' as any]: '-180px', ['--rot' as any]: '-6deg', ['--sc' as any]: '1' }}
+                    style={{ filter: "drop-shadow(0 24px 36px rgba(0,0,0,0.16))", '--tx': '-120px', '--ty': '-180px', '--rot': '-6deg', '--sc': '1' } as React.CSSProperties}
                   />
                 </div>
                 {/* paper clip pinned to the left screen edge moved to section level */}
@@ -269,8 +264,7 @@ export default function Home() {
               src="/images/2C-Landing-Assets/paper-clip.png"
               alt=""
               className="hero-nudge pointer-events-none absolute left-0 -ml-6 hidden sm:block lg:-ml-12"
-              style={{ top: `${rowTop + 25}px`, width: "clamp(44px, 5vw, 72px)", filter: "drop-shadow(0 12px 24px rgba(0,0,0,0.12))", //@ts-ignore
-                ['--tx' as any]: '70px', ['--ty' as any]: '30px', ['--rot' as any]: '-12deg', ['--sc' as any]: '3' }}
+              style={{ top: `${rowTop + 25}px`, width: "clamp(44px, 5vw, 72px)", filter: "drop-shadow(0 12px 24px rgba(0,0,0,0.12))", '--tx': '70px', '--ty': '30px', '--rot': '-12deg', '--sc': '3' } as React.CSSProperties}
             />
           )}
 
@@ -290,8 +284,7 @@ export default function Home() {
                 src="/images/2C-Landing-Assets/gold star.png"
                 alt=""
                 className="hero-nudge pointer-events-none absolute z-30"
-                style={{ top: "8%", left: "70%", width: "clamp(40px, 5vw, 68px)", filter: "drop-shadow(0 14px 28px rgba(0,0,0,0.14))", transformOrigin: "center", //@ts-ignore
-                  ['--tx' as any]: '-90px', ['--ty' as any]: '70px', ['--rot' as any]: '0deg', ['--sc' as any]: '2' }}
+                style={{ top: "8%", left: "70%", width: "clamp(40px, 5vw, 68px)", filter: "drop-shadow(0 14px 28px rgba(0,0,0,0.14))", transformOrigin: "center", '--tx': '-90px', '--ty': '70px', '--rot': '0deg', '--sc': '2' } as React.CSSProperties}
               />
             </div>
           </div>
