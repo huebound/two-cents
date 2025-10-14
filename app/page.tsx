@@ -127,8 +127,27 @@ export default function Home() {
 
   if (step === "landing") {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <main className="flex flex-col items-center gap-8 text-center">
+      <div className="flex min-h-screen flex-col">
+        {/* Header/Nav Bar */}
+        <header className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-3">
+            <img
+              src="/images/2C-Landing-Assets/eyeball.png"
+              alt="Two Cents Club"
+              className="h-8 w-8"
+            />
+            <span className="text-xl">Two Cents Club</span>
+          </div>
+          <span
+            className="cursor-pointer text-xl"
+            onClick={() => setStep("email")}
+          >
+            Join the Waitlist
+          </span>
+        </header>
+
+        {/* Main Content */}
+        <main className="flex flex-1 flex-col items-center justify-center gap-8 text-center">
           <h1 className="text-4xl">Welcome to Two Cents Club.</h1>
           <div className="flex gap-4">
             <Button onClick={() => setStep("email")}>Join the Club</Button>
