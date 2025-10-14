@@ -120,3 +120,13 @@
     @apply bg-background text-foreground font-sans;
   }
 }
+
+/* Small utility for pixel-perfect nudging of hero assets */
+.hero-nudge {
+  --tx: 0px;
+  --ty: 0px;
+  --rot: 0deg;
+  --sc: 1;
+  transform-origin: bottom center;
+  transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(var(--sc));
+}

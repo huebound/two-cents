@@ -27,9 +27,9 @@ export default function Home() {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   // hero alignment helpers
-  const headingRef = useRef<HTMLHeadingElement | null>(null);
-  const artRef = useRef<HTMLDivElement | null>(null);
-  const [pennyTop, setPennyTop] = useState<number | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const ctaRef = useRef<HTMLButtonElement | null>(null);
+  const [rowTop, setRowTop] = useState<number | null>(null);
 
   useEffect(() => {
     // Check if user is already authenticated
@@ -54,30 +54,23 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Keep the penny vertically aligned to the heading across breakpoints
+  // Penny alignment logic removed; penny uses hero-nudge like other assets
+
+  // Position the baseline row just below the CTA
   useEffect(() => {
-    const syncPenny = () => {
-      const art = artRef.current;
-      const h1 = headingRef.current;
-      if (!art || !h1) return;
-      const artRect = art.getBoundingClientRect();
-      const h1Rect = h1.getBoundingClientRect();
-      // Position so the penny sits roughly across from the first line of the heading
-      const top = h1Rect.top - artRect.top + h1Rect.height * 0.12;
-      // Constrain a little so it doesn't escape the artboard
-      const clamped = Math.max(artRect.height * 0.02, Math.min(top, artRect.height * 0.6));
-      setPennyTop(clamped);
+    const syncRow = () => {
+      const sec = sectionRef.current;
+      const cta = ctaRef.current;
+      if (!sec || !cta) return;
+      const s = sec.getBoundingClientRect();
+      const b = cta.getBoundingClientRect();
+      const top = b.bottom - s.top + 32; // 32px gap below CTA
+      setRowTop(top);
     };
-    syncPenny();
-    // Recalculate after webfonts settle to avoid a jump
-    try {
-      // @ts-expect-error fonts may not exist in all browsers during SSR typing
-      document?.fonts?.ready?.then?.(() => syncPenny());
-    } catch (_) {
-      /* no-op */
-    }
-    window.addEventListener("resize", syncPenny);
-    return () => window.removeEventListener("resize", syncPenny);
+    syncRow();
+    window.addEventListener("resize", syncRow);
+    try { document?.fonts?.ready?.then?.(() => syncRow()); } catch (_) {}
+    return () => window.removeEventListener("resize", syncRow);
   }, []);
 
   const handleSendOtp = async () => {
@@ -177,11 +170,11 @@ export default function Home() {
         </header>
 
         {/* Hero Section */}
-        <section className="relative isolate w-full overflow-hidden px-6 py-16 sm:py-24 lg:px-12">
-          <div className="mx-auto grid min-h-[70vh] max-w-7xl grid-cols-12 items-center gap-x-8 gap-y-10 lg:min-h-[80vh]">
+        <section ref={sectionRef} className="relative isolate w-full overflow-hidden px-6 pb-16 sm:pb-24 lg:px-12">
+          <div className="mx-auto grid max-w-7xl grid-cols-12 items-start gap-x-8 gap-y-10">
             {/* Copy column */}
-            <div className="relative z-20 col-span-12 mt-6 max-w-[42rem] space-y-6 md:col-span-7 lg:mt-10">
-              <h1 ref={headingRef} className="font-medium leading-[1.05] tracking-[-0.04em] text-black" style={{ fontFamily: '"Neue Montreal"', fontSize: "clamp(2.75rem, 6vw, 5rem)" }}>
+            <div className="relative z-20 col-span-12 mt-[54px] max-w-[780px] space-y-[32px] md:col-span-7 lg:h-[897px]">
+              <h1 className="font-medium leading-[1.05] tracking-[-0.04em] text-black" style={{ fontFamily: '"Neue Montreal"', fontSize: "clamp(2.75rem, 6vw, 5rem)" }}>
                 Your curiosity deserves
                 <br />
                 a comeback.
@@ -196,84 +189,112 @@ export default function Home() {
                 growth—one who still believes in wonder. Explore new skills, meet
                 curious people, and invest your fully in your curiosities.
               </p>
-              <div className="pt-4">
-                <Button
-                  onClick={() => setStep("email")}
-                  className="rounded-full bg-blue-600 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-blue-700"
-                >
-                  Join the Waitlist
-                </Button>
-              </div>
+              <Button
+                onClick={() => setStep("email")}
+                ref={ctaRef}
+                className="rounded-full bg-blue-600 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-blue-700"
+              >
+                Join the Waitlist
+              </Button>
             </div>
 
             {/* Artboard column (places images by % inside a stable box) */}
-            <div ref={artRef} className="relative col-span-12 h-[520px] md:col-span-5 md:h-[520px] lg:h-[620px]">
+            <div className="relative col-span-12 h-[520px] md:col-span-5 md:h-[520px] lg:h-[897px]">
               {/* penny directly across from the headline */}
               <img
                 src="/images/2C-Landing-Assets/penny.png"
                 alt=""
-                className="pointer-events-none absolute z-10 w-14 rotate-12 sm:w-16 lg:w-20"
-                style={{ top: pennyTop !== null ? `${pennyTop}px` : "8%", left: "8%", filter: "drop-shadow(0 18px 32px rgba(0,0,0,0.18))" }}
+                className="hero-nudge pointer-events-none absolute z-10 w-[120px] sm:w-[128px] lg:w-[152px]"
+                style={{ top: "10%", left: "8%", filter: "drop-shadow(0 18px 32px rgba(0,0,0,0.18))", //@ts-ignore
+                  ['--tx' as any]: '50px', ['--ty' as any]: '0px', ['--rot' as any]: '-10deg', ['--sc' as any]: '1' }}
               />
-              {/* star */}
-              <img
-                src="/images/2C-Landing-Assets/gold star.png"
-                alt=""
-                className="pointer-events-none absolute z-20 hidden w-12 rotate-3 sm:block lg:w-16"
-                style={{ top: "20%", left: "70%", filter: "drop-shadow(0 14px 28px rgba(0,0,0,0.12))" }}
-              />
-              {/* cd */}
-              <img
-                src="/images/2C-Landing-Assets/cd.png"
-                alt=""
-                className="pointer-events-none absolute hidden w-20 -rotate-12 sm:block lg:w-24"
-                style={{ top: "40%", left: "30%", filter: "drop-shadow(0 24px 36px rgba(0,0,0,0.16))" }}
-              />
-              {/* ruled paper stack */}
-              <img
-                src="/images/2C-Landing-Assets/paper.png"
-                alt=""
-                className="pointer-events-none absolute hidden sm:block"
-                style={{ right: "-12%", top: "22%", width: "68%", transform: "rotate(3deg)", filter: "drop-shadow(0 28px 42px rgba(0,0,0,0.18))" }}
-              />
-              {/* bowl near bottom left of the artboard */}
-              <img
-                src="/images/2C-Landing-Assets/bowl.png"
-                alt=""
-                className="pointer-events-none absolute w-28 sm:w-32 lg:w-40"
-                style={{ left: "16%", bottom: "6%", transform: "rotate(-3deg)", filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.14))" }}
-              />
-              {/* compass peeking from corner */}
-              <img
-                src="/images/2C-Landing-Assets/compass.png"
-                alt=""
-                className="pointer-events-none absolute hidden sm:block lg:w-28"
-                style={{ right: "-6%", bottom: "-6%", width: "88px", transform: "rotate(6deg)", filter: "drop-shadow(0 18px 30px rgba(0,0,0,0.18))" }}
-              />
-              {/* paper clip accent */}
-              <img
-                src="/images/2C-Landing-Assets/paper-clip.png"
-                alt=""
-                className="pointer-events-none absolute hidden sm:block"
-                style={{ right: "8%", bottom: "2%", width: "64px", transform: "rotate(-12deg)", filter: "drop-shadow(0 16px 28px rgba(0,0,0,0.12))" }}
-              />
-              {/* small doodle near bowl */}
-              <img
-                src="/images/2C-Landing-Assets/doodle.png"
-                alt=""
-                className="pointer-events-none absolute hidden sm:block"
-                style={{ left: "24%", bottom: "2%", width: "44px", filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.1))" }}
-              />
+              {/* star moved to the paper wrapper below so it follows the paper */}
+              {/* cd moved to the baseline row */}
+              {/* ruled paper stack moved to be pinned to the viewport right edge */}
+              {/* bowl moved to the baseline row */}
+              {/* compass moved to the baseline row */}
+              {/* paper clip accent moved to viewport left edge below */}
             </div>
           </div>
 
-          {/* Pen is intentionally placed at the section level so it can tuck under the headline */}
-          <img
-            src="/images/2C-Landing-Assets/pen.png"
-            alt=""
-            className="pointer-events-none absolute z-10 w-16 -rotate-45 sm:w-20"
-            style={{ left: "2%", top: "44%", filter: "drop-shadow(0 16px 28px rgba(0,0,0,0.14))" }}
-          />
+          {/* Baseline row below the text */}
+          {rowTop !== null && (
+            <div
+              className="pointer-events-none absolute left-0 right-0 hidden sm:block"
+              style={{ top: rowTop }}
+            >
+              <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
+                <div className="flex h-[240px] items-end justify-between gap-6 lg:h-[280px]">
+                  {/* compass */}
+                  <img
+                    src="/images/2C-Landing-Assets/compass.png"
+                    alt=""
+                    className="hero-nudge w-[120px] lg:w-[140px]"
+                    style={{ filter: "drop-shadow(0 18px 30px rgba(0,0,0,0.18))", //@ts-ignore
+                      ['--tx' as any]: '-20px', ['--ty' as any]: '80px', ['--rot' as any]: '6deg', ['--sc' as any]: '1.5' }}
+                  />
+                  {/* bowl */}
+                  <img
+                    src="/images/2C-Landing-Assets/bowl.png"
+                    alt=""
+                    className="hero-nudge w-[200px] lg:w-[240px]"
+                    style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.14))", //@ts-ignore
+                      ['--tx' as any]: '-30px', ['--ty' as any]: '80px', ['--rot' as any]: '0deg', ['--sc' as any]: '1.25' }}
+                  />
+                  {/* pen */}
+                  <img
+                    src="/images/2C-Landing-Assets/pen.png"
+                    alt=""
+                    className="hero-nudge w-[80px] lg:w-[96px]"
+                    style={{ filter: "drop-shadow(0 16px 28px rgba(0,0,0,0.14))", //@ts-ignore
+                      ['--tx' as any]: '-50px', ['--ty' as any]: '-6px', ['--rot' as any]: '-2deg', ['--sc' as any]: '1.25' }}
+                  />
+                  {/* cd */}
+                  <img
+                    src="/images/2C-Landing-Assets/cd.png"
+                    alt=""
+                    className="hero-nudge w-[180px] lg:w-[220px]"
+                    style={{ filter: "drop-shadow(0 24px 36px rgba(0,0,0,0.16))", //@ts-ignore
+                      ['--tx' as any]: '-120px', ['--ty' as any]: '-180px', ['--rot' as any]: '-6deg', ['--sc' as any]: '1' }}
+                  />
+                </div>
+                {/* paper clip pinned to the left screen edge moved to section level */}
+              </div>
+            </div>
+          )}
+          {/* Paper pinned to right screen edge with star overlay (see wrapper below) */}
+          {/* Paper clip pinned to viewport left edge near the baseline row (nudgeable) */}
+          {rowTop !== null && (
+            <img
+              src="/images/2C-Landing-Assets/paper-clip.png"
+              alt=""
+              className="hero-nudge pointer-events-none absolute left-0 -ml-6 hidden sm:block lg:-ml-12"
+              style={{ top: `${rowTop + 25}px`, width: "clamp(44px, 5vw, 72px)", filter: "drop-shadow(0 12px 24px rgba(0,0,0,0.12))", //@ts-ignore
+                ['--tx' as any]: '70px', ['--ty' as any]: '30px', ['--rot' as any]: '-12deg', ['--sc' as any]: '3' }}
+            />
+          )}
+
+          {/* Paper pinned to right screen edge with star overlay, wrapper keeps them together */}
+          <div
+            className="pointer-events-none absolute right-0 -mr-6 top-[16%] hidden sm:block lg:-mr-12"
+            style={{ width: "clamp(260px, 30vw, 520px)" }}
+          >
+            <div className="relative w-full">
+              <img
+                src="/images/2C-Landing-Assets/paper.png"
+                alt=""
+                className="w-full rotate-[3deg]"
+                style={{ filter: "drop-shadow(0 28px 42px rgba(0,0,0,0.18))" }}
+              />
+              <img
+                src="/images/2C-Landing-Assets/gold star.png"
+                alt=""
+                className="hero-nudge pointer-events-none absolute z-30"
+                style={{ top: "8%", left: "70%", width: "clamp(40px, 5vw, 68px)", filter: "drop-shadow(0 14px 28px rgba(0,0,0,0.14))", transformOrigin: "center", //@ts-ignore
+                  ['--tx' as any]: '-90px', ['--ty' as any]: '70px', ['--rot' as any]: '0deg', ['--sc' as any]: '2' }}
+              />
+            </div>
+          </div>
         </section>
 
         {/* Three Feature Sections Container */}
