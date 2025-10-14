@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,10 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  // hero alignment helpers
+  const headingRef = useRef<HTMLHeadingElement | null>(null);
+  const artRef = useRef<HTMLDivElement | null>(null);
+  const [pennyTop, setPennyTop] = useState<number | null>(null);
 
   useEffect(() => {
     // Check if user is already authenticated
@@ -48,6 +52,32 @@ export default function Home() {
     };
     void checkAuth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Keep the penny vertically aligned to the heading across breakpoints
+  useEffect(() => {
+    const syncPenny = () => {
+      const art = artRef.current;
+      const h1 = headingRef.current;
+      if (!art || !h1) return;
+      const artRect = art.getBoundingClientRect();
+      const h1Rect = h1.getBoundingClientRect();
+      // Position so the penny sits roughly across from the first line of the heading
+      const top = h1Rect.top - artRect.top + h1Rect.height * 0.12;
+      // Constrain a little so it doesn't escape the artboard
+      const clamped = Math.max(artRect.height * 0.02, Math.min(top, artRect.height * 0.6));
+      setPennyTop(clamped);
+    };
+    syncPenny();
+    // Recalculate after webfonts settle to avoid a jump
+    try {
+      // @ts-expect-error fonts may not exist in all browsers during SSR typing
+      document?.fonts?.ready?.then?.(() => syncPenny());
+    } catch (_) {
+      /* no-op */
+    }
+    window.addEventListener("resize", syncPenny);
+    return () => window.removeEventListener("resize", syncPenny);
   }, []);
 
   const handleSendOtp = async () => {
@@ -147,71 +177,102 @@ export default function Home() {
         </header>
 
         {/* Hero Section */}
-        <section className="relative flex flex-1 flex-col items-start justify-center px-6 py-20 lg:px-12">
-          <div className="max-w-2xl">
-            <h1 className="mb-6 text-5xl font-bold leading-tight lg:text-6xl">
-              Your curiosity deserves a comeback.
-            </h1>
-            <p className="mb-8 text-lg leading-relaxed text-gray-700">
-              Remember when learning felt like play? When you explored things
-              just because they sparked joy? Two Cents Club brings that feeling
-              back. Join a community of curious minds where passion meets
-              growth—one who still believes in wonder. Explore new skills, meet
-              curious people, and invest your fully in your curiosities.
-            </p>
-            <Button
-              onClick={() => setStep("email")}
-              className="rounded-full bg-blue-600 px-6 py-3 text-base font-medium text-white hover:bg-blue-700"
-            >
-              Join the Waitlist
-            </Button>
+        <section className="relative isolate w-full overflow-hidden px-6 py-16 sm:py-24 lg:px-12">
+          <div className="mx-auto grid min-h-[70vh] max-w-7xl grid-cols-12 items-center gap-x-8 gap-y-10 lg:min-h-[80vh]">
+            {/* Copy column */}
+            <div className="relative z-20 col-span-12 mt-6 max-w-[42rem] space-y-6 md:col-span-7 lg:mt-10">
+              <h1 ref={headingRef} className="font-medium leading-[1.05] tracking-[-0.04em] text-black" style={{ fontFamily: '"Neue Montreal"', fontSize: "clamp(2.75rem, 6vw, 5rem)" }}>
+                Your curiosity deserves
+                <br />
+                a comeback.
+              </h1>
+              <p className="text-lg leading-relaxed text-slate-700">
+                Remember when learning felt like play? When you explored things
+                just because they sparked joy?
+              </p>
+              <p className="text-lg leading-relaxed text-slate-700">
+                Two Cents Club brings that feeling
+                back. Join a community of curious minds where passion meets
+                growth—one who still believes in wonder. Explore new skills, meet
+                curious people, and invest your fully in your curiosities.
+              </p>
+              <div className="pt-4">
+                <Button
+                  onClick={() => setStep("email")}
+                  className="rounded-full bg-blue-600 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-blue-700"
+                >
+                  Join the Waitlist
+                </Button>
+              </div>
+            </div>
+
+            {/* Artboard column (places images by % inside a stable box) */}
+            <div ref={artRef} className="relative col-span-12 h-[520px] md:col-span-5 md:h-[520px] lg:h-[620px]">
+              {/* penny directly across from the headline */}
+              <img
+                src="/images/2C-Landing-Assets/penny.png"
+                alt=""
+                className="pointer-events-none absolute z-10 w-14 rotate-12 sm:w-16 lg:w-20"
+                style={{ top: pennyTop !== null ? `${pennyTop}px` : "8%", left: "8%", filter: "drop-shadow(0 18px 32px rgba(0,0,0,0.18))" }}
+              />
+              {/* star */}
+              <img
+                src="/images/2C-Landing-Assets/gold star.png"
+                alt=""
+                className="pointer-events-none absolute z-20 hidden w-12 rotate-3 sm:block lg:w-16"
+                style={{ top: "20%", left: "70%", filter: "drop-shadow(0 14px 28px rgba(0,0,0,0.12))" }}
+              />
+              {/* cd */}
+              <img
+                src="/images/2C-Landing-Assets/cd.png"
+                alt=""
+                className="pointer-events-none absolute hidden w-20 -rotate-12 sm:block lg:w-24"
+                style={{ top: "40%", left: "30%", filter: "drop-shadow(0 24px 36px rgba(0,0,0,0.16))" }}
+              />
+              {/* ruled paper stack */}
+              <img
+                src="/images/2C-Landing-Assets/paper.png"
+                alt=""
+                className="pointer-events-none absolute hidden sm:block"
+                style={{ right: "-12%", top: "22%", width: "68%", transform: "rotate(3deg)", filter: "drop-shadow(0 28px 42px rgba(0,0,0,0.18))" }}
+              />
+              {/* bowl near bottom left of the artboard */}
+              <img
+                src="/images/2C-Landing-Assets/bowl.png"
+                alt=""
+                className="pointer-events-none absolute w-28 sm:w-32 lg:w-40"
+                style={{ left: "16%", bottom: "6%", transform: "rotate(-3deg)", filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.14))" }}
+              />
+              {/* compass peeking from corner */}
+              <img
+                src="/images/2C-Landing-Assets/compass.png"
+                alt=""
+                className="pointer-events-none absolute hidden sm:block lg:w-28"
+                style={{ right: "-6%", bottom: "-6%", width: "88px", transform: "rotate(6deg)", filter: "drop-shadow(0 18px 30px rgba(0,0,0,0.18))" }}
+              />
+              {/* paper clip accent */}
+              <img
+                src="/images/2C-Landing-Assets/paper-clip.png"
+                alt=""
+                className="pointer-events-none absolute hidden sm:block"
+                style={{ right: "8%", bottom: "2%", width: "64px", transform: "rotate(-12deg)", filter: "drop-shadow(0 16px 28px rgba(0,0,0,0.12))" }}
+              />
+              {/* small doodle near bowl */}
+              <img
+                src="/images/2C-Landing-Assets/doodle.png"
+                alt=""
+                className="pointer-events-none absolute hidden sm:block"
+                style={{ left: "24%", bottom: "2%", width: "44px", filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.1))" }}
+              />
+            </div>
           </div>
 
-          {/* Floating decorative objects */}
-          <img
-            src="/images/2C-Landing-Assets/penny.png"
-            alt=""
-            className="absolute right-[10%] top-[10%] w-16 rotate-12 lg:w-20"
-          />
-          <img
-            src="/images/2C-Landing-Assets/gold star.png"
-            alt=""
-            className="absolute right-[20%] top-[15%] w-12 lg:w-16"
-          />
-          <img
-            src="/images/2C-Landing-Assets/cd.png"
-            alt=""
-            className="absolute right-[15%] top-[30%] w-20 -rotate-12 lg:w-24"
-          />
-          <img
-            src="/images/2C-Landing-Assets/bowl.png"
-            alt=""
-            className="absolute left-[15%] bottom-[30%] w-32 lg:w-40"
-          />
-          <img
-            src="/images/2C-Landing-Assets/compass.png"
-            alt=""
-            className="absolute right-[12%] bottom-[25%] w-24 rotate-6 lg:w-28"
-          />
+          {/* Pen is intentionally placed at the section level so it can tuck under the headline */}
           <img
             src="/images/2C-Landing-Assets/pen.png"
             alt=""
-            className="absolute left-[8%] top-[40%] w-16 -rotate-45 lg:w-20"
-          />
-          <img
-            src="/images/2C-Landing-Assets/paper.png"
-            alt=""
-            className="absolute right-[8%] bottom-[10%] w-32 rotate-3 lg:w-40"
-          />
-          <img
-            src="/images/2C-Landing-Assets/paper-clip.png"
-            alt=""
-            className="absolute right-[10%] bottom-[15%] w-16 -rotate-12 lg:w-20"
-          />
-          <img
-            src="/images/2C-Landing-Assets/doodle.png"
-            alt=""
-            className="absolute left-[5%] bottom-[15%] w-8 lg:w-12"
+            className="pointer-events-none absolute z-10 w-16 -rotate-45 sm:w-20"
+            style={{ left: "2%", top: "44%", filter: "drop-shadow(0 16px 28px rgba(0,0,0,0.14))" }}
           />
         </section>
 
