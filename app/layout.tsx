@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
+import Script from "next/script";
+import AnalyticsTracker from "@/components/analytics";
 
 const neueMontreal = localFont({
   src: [
@@ -51,9 +54,29 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Google tag (gtag.js) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-WXFS6QMZ0Z"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            // Disable automatic page_view to avoid double counts in SPA
+            gtag('config', 'G-WXFS6QMZ0Z', { send_page_view: false });
+          `}
+        </Script>
+      </head>
       <body
         className={`${neueMontreal.variable} ${geistMono.variable} antialiased font-sans`}
       >
+        <Suspense fallback={null}>
+          <AnalyticsTracker />
+        </Suspense>
         {children}
       </body>
     </html>
