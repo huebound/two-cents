@@ -154,20 +154,19 @@ export default function Home() {
     return (
       <div className="flex min-h-screen flex-col bg-white">
         {/* Header/Nav Bar */}
-        <header className="absolute top-0 left-0 right-0 z-50 flex items-start justify-between px-12 py-8">
-          <div className="flex items-center gap-3">
+        <header className="absolute top-0 left-0 right-0 z-50 flex items-start justify-between px-6 py-4 md:px-12 md:py-8">
+          <div className="flex items-center gap-2 md:gap-3">
             <img
               src="/images/2C-Landing-Assets/eyeball.png"
               alt="Two Cents Club"
-              className="h-10 w-10"
+              className="h-6 w-6 md:h-10 md:w-10"
             />
-            <span className="font-medium text-white" style={{ fontSize: '24px' }}>
+            <span className="font-medium text-white text-base md:text-[24px]">
               Two Cents Club
             </span>
           </div>
           <button
-            className="font-medium text-white hover:underline"
-            style={{ fontSize: '24px' }}
+            className="font-medium text-white hover:underline text-base md:text-[24px]"
             onClick={() => setStep("email")}
           >
             Join the Club
