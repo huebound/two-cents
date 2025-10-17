@@ -152,22 +152,43 @@ export default function Home() {
     return (
       <div className="flex min-h-screen flex-col bg-white">
         {/* Header/Nav Bar */}
-        <header className="flex items-center justify-between px-6 py-4 lg:px-12">
+        <header className="absolute top-0 left-0 right-0 z-50 flex items-start justify-between px-12 py-8">
           <div className="flex items-center gap-2">
             <img
               src="/images/2C-Landing-Assets/eyeball.png"
               alt="Two Cents Club"
-              className="h-6 w-6"
+              className="h-8 w-8"
             />
-            <span className="text-base font-medium">Two Cents Club</span>
+            <span className="text-xl font-medium text-white">
+              Two Cents Club
+            </span>
           </div>
           <button
-            className="text-base font-medium hover:underline"
+            className="text-xl font-medium text-white hover:underline"
             onClick={() => setStep("email")}
           >
-            Join the Waitlist
+            Join the Club
           </button>
         </header>
+
+        {/* Video Hero Section */}
+        <section className="relative h-screen w-full overflow-hidden">
+          <div className="absolute inset-0">
+            <iframe
+              src="https://player.vimeo.com/video/1128324777?badge=0&autopause=0&autoplay=1&loop=1&muted=1&background=1"
+              className="absolute left-1/2 top-1/2 h-[56.25vw] min-h-full w-[177.77vh] min-w-full -translate-x-1/2 -translate-y-1/2"
+              frameBorder="0"
+              allow="autoplay; fullscreen; picture-in-picture"
+              title="Hero video"
+            />
+          </div>
+          <div
+            className="absolute inset-0"
+            style={{
+              background: 'radial-gradient(49.99% 49.95% at 50% 50%, rgba(0, 0, 0, 0.00) 0%, rgba(0, 0, 0, 0.60) 92.79%)'
+            }}
+          />
+        </section>
 
         {/* Hero Section */}
         <section ref={sectionRef} className="relative isolate w-full overflow-hidden px-6 pb-16 sm:pb-24 lg:px-12">
