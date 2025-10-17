@@ -181,19 +181,21 @@ export default function Home() {
               src="https://player.vimeo.com/video/1128324777?badge=0&autopause=0&autoplay=1&loop=1&muted=1&background=1"
               className="absolute left-1/2 top-1/2 h-[56.25vw] min-h-full w-[177.77vh] min-w-full"
               style={{
-                transform: 'translate(-40%, -50%) scale(1.2)'
+                transform: 'translate(-60%, -50%) scale(1.2)',
               }}
               frameBorder="0"
               allow="autoplay; fullscreen; picture-in-picture"
               title="Hero video"
             />
+            <style jsx>{`
+              @media (min-width: 768px) {
+                iframe {
+                  transform: translate(-40%, -50%) scale(1.2) !important;
+                }
+              }
+            `}</style>
           </div>
-          <div
-            className="absolute inset-0"
-            style={{
-              background: "rgba(0, 0, 0, 0.4)",
-            }}
-          />
+          <div className="absolute inset-0 bg-black/60 md:bg-black/40" />
           <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-0">
             {/* Main content */}
             <div className="flex items-center flex-1 md:pl-[118px]">
