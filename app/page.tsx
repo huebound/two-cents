@@ -197,10 +197,10 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/60 md:bg-black/40" />
           <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-0">
             {/* Main content */}
-            <div className="flex items-center flex-1 md:pl-[118px]">
-              <div className="flex flex-col items-start max-w-full md:max-w-[897px]">
+            <div className="flex items-center justify-center flex-1 md:justify-start md:pl-[118px]">
+              <div className="flex flex-col items-center md:items-start max-w-full md:max-w-[897px]">
                 <h3
-                  className="uppercase text-white font-mono text-[16px] md:text-[20px] mb-2 md:mb-[10px]"
+                  className="uppercase text-white font-mono text-[16px] md:text-[20px] mb-2 md:mb-[10px] text-center md:text-left"
                   style={{
                     fontWeight: 400,
                     lineHeight: "normal",
@@ -209,9 +209,9 @@ export default function Home() {
                   class highlight
                 </h3>
                 <h1
-                  className="text-white font-sans mb-4 md:mb-8"
+                  className="text-white font-sans mb-4 md:mb-8 text-center md:text-left"
                   style={{
-                    fontSize: "clamp(40px, 8vw, 72px)",
+                    fontSize: "clamp(52px, 8vw, 72px)",
                     fontWeight: 400,
                     lineHeight: "100%",
                     letterSpacing: "-1.6px",
@@ -221,7 +221,7 @@ export default function Home() {
                   The Science and Craft of Coffee
                 </h1>
                 <p
-                  className="text-white font-sans text-[18px] md:text-[24px] mb-6 md:mb-9"
+                  className="text-white font-sans text-[18px] md:text-[24px] mb-6 md:mb-9 text-center md:text-left px-8 md:px-0"
                   style={{
                     fontWeight: 400,
                     lineHeight: "110%",
@@ -246,7 +246,7 @@ export default function Home() {
             </div>
 
             {/* Bottom right details */}
-            <div className="text-left md:text-right text-white font-sans mt-6 md:mt-0 md:absolute md:bottom-0 md:right-0 md:pr-[118px] md:pb-[96px]">
+            <div className="text-center md:text-right text-white font-sans mt-6 md:mt-0 md:absolute md:bottom-0 md:right-0 md:pr-[118px] md:pb-[96px]">
               <div
                 className="text-[18px] md:text-[24px]"
                 style={{
@@ -279,9 +279,9 @@ export default function Home() {
         >
           <div className="mx-auto grid max-w-7xl grid-cols-12 items-start gap-x-8 gap-y-10">
             {/* Copy column */}
-            <div className="relative z-20 col-span-12 mt-[54px] max-w-[780px] space-y-[32px] md:col-span-7 lg:h-[897px]">
+            <div className="relative z-20 col-span-12 mt-[54px] max-w-[780px] space-y-[32px] md:col-span-7 lg:h-[897px] mx-auto md:mx-0">
               <h1
-                className="font-medium leading-[1.05] tracking-[-0.04em] text-black"
+                className="font-medium leading-[1.05] tracking-[-0.04em] text-black text-center md:text-left"
                 style={{
                   fontFamily: '"Neue Montreal"',
                   fontSize: "clamp(2.75rem, 6vw, 5rem)",
@@ -290,23 +290,25 @@ export default function Home() {
                 Your curiosity deserves
                 <br />a comeback.
               </h1>
-              <p className="text-lg leading-relaxed text-slate-700">
+              <p className="text-lg leading-relaxed text-slate-700 text-center md:text-left">
                 Remember when learning felt like play? When you explored things
                 just because they sparked joy?
               </p>
-              <p className="text-lg leading-relaxed text-slate-700">
+              <p className="text-lg leading-relaxed text-slate-700 text-center md:text-left">
                 Two Cents Club brings that feeling back. Join a community of
                 curious minds where passion meets growth—one who still believes
                 in wonder. Explore new skills, meet curious people, and invest
                 your fully in your curiosities.
               </p>
-              <Button
-                onClick={() => setStep("email")}
-                ref={ctaRef}
-                className="rounded-full bg-blue-600 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-blue-700"
-              >
-                Join the Waitlist
-              </Button>
+              <div className="flex justify-center md:justify-start">
+                <Button
+                  onClick={() => setStep("email")}
+                  ref={ctaRef}
+                  className="rounded-full bg-blue-600 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-blue-700"
+                >
+                  Join the Waitlist
+                </Button>
+              </div>
             </div>
 
             {/* Artboard column (places images by % inside a stable box) */}
