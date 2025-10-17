@@ -191,96 +191,82 @@ export default function Home() {
           <div
             className="absolute inset-0"
             style={{
-              background:
-                "radial-gradient(49.99% 49.95% at 50% 50%, rgba(0, 0, 0, 0.00) 0%, rgba(0, 0, 0, 0.60) 92.79%)",
+              background: "rgba(0, 0, 0, 0.4)",
             }}
           />
-          <div
-            className="absolute inset-0 flex items-center"
-            style={{ paddingLeft: "118px" }}
-          >
-            <div
-              className="flex flex-col items-start"
-              style={{
-                width: "897px",
-                height: "470px",
-              }}
-            >
-              <h3
-                className="uppercase text-white font-mono"
-                style={{
-                  fontSize: "20px",
-                  fontWeight: 400,
-                  lineHeight: "normal",
-                  marginBottom: "10px",
-                }}
-              >
-                class highlight
-              </h3>
-              <h1
-                className="text-white font-sans"
-                style={{
-                  fontSize: "80px",
-                  fontWeight: 400,
-                  lineHeight: "100%",
-                  letterSpacing: "-1.6px",
-                  maxWidth: "778px",
-                  marginBottom: "32px",
-                }}
-              >
-                The Science and Craft of Coffee
-              </h1>
-              <p
-                className="text-white font-sans"
-                style={{
-                  fontSize: "24px",
-                  fontWeight: 400,
-                  lineHeight: "110%",
-                  maxWidth: "667px",
-                  marginBottom: "36px",
-                }}
-              >
-                Join Duc, a lifelong coffee enthusiast, for an intimate deep
-                dive into espresso. You&apos;ll leave with more than just knowing how
-                to make barista-grade coffee, but a new perspective on the
-                science and artistry behind your cup.
-                <br />
-                <br />
-                Class is limited to 7 people to maintain quality.
-              </p>
-              <Button
-                onClick={() => setStep("email")}
-                className="rounded-full bg-white px-6 py-3 text-base font-medium text-black transition-colors hover:bg-gray-100"
-              >
-                Book a seat
-              </Button>
+          <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-0">
+            {/* Main content */}
+            <div className="flex items-center flex-1 md:pl-[118px]">
+              <div className="flex flex-col items-start max-w-full md:max-w-[897px]">
+                <h3
+                  className="uppercase text-white font-mono text-[16px] md:text-[20px] mb-2 md:mb-[10px]"
+                  style={{
+                    fontWeight: 400,
+                    lineHeight: "normal",
+                  }}
+                >
+                  class highlight
+                </h3>
+                <h1
+                  className="text-white font-sans mb-4 md:mb-8"
+                  style={{
+                    fontSize: "clamp(40px, 8vw, 72px)",
+                    fontWeight: 400,
+                    lineHeight: "100%",
+                    letterSpacing: "-1.6px",
+                    maxWidth: "778px",
+                  }}
+                >
+                  The Science and Craft of Coffee
+                </h1>
+                <p
+                  className="text-white font-sans text-[18px] md:text-[24px] mb-6 md:mb-9"
+                  style={{
+                    fontWeight: 400,
+                    lineHeight: "110%",
+                    maxWidth: "667px",
+                  }}
+                >
+                  Join Duc, a lifelong coffee enthusiast, for an intimate deep
+                  dive into espresso. You&apos;ll leave with more than just knowing how
+                  to make barista-grade coffee, but a new perspective on the
+                  science and artistry behind your cup.
+                  <br />
+                  <br />
+                  Class is limited to 7 people to maintain quality.
+                </p>
+                <Button
+                  onClick={() => setStep("email")}
+                  className="rounded-full bg-white px-6 py-3 text-base font-medium text-black transition-colors hover:bg-gray-100"
+                >
+                  Book a seat
+                </Button>
+              </div>
             </div>
-          </div>
-          {/* Bottom right details */}
-          <div
-            className="absolute bottom-0 right-0 text-right text-white font-sans"
-            style={{ paddingRight: "118px", paddingBottom: "96px" }}
-          >
-            <div
-              style={{
-                fontSize: "24px",
-                lineHeight: "110%",
-              }}
-            >
-              <p>
-                <span style={{ fontWeight: 700 }}>Taught by:</span>{" "}
-                <span style={{ fontWeight: 400 }}>Duc Nguyen</span>
-              </p>
-              <p>
-                <span style={{ fontWeight: 700 }}>Date:</span>{" "}
-                <span style={{ fontWeight: 400 }}>October 25 & November 1</span>
-              </p>
-              <p>
-                <span style={{ fontWeight: 700 }}>Location:</span>{" "}
-                <span style={{ fontWeight: 400 }}>
-                  Jefferson Park, Los Angeles
-                </span>
-              </p>
+
+            {/* Bottom right details */}
+            <div className="text-left md:text-right text-white font-sans mt-6 md:mt-0 md:absolute md:bottom-0 md:right-0 md:pr-[118px] md:pb-[96px]">
+              <div
+                className="text-[18px] md:text-[24px]"
+                style={{
+                  lineHeight: "110%",
+                }}
+              >
+                <p>
+                  <span style={{ fontWeight: 700 }}>Taught by:</span>{" "}
+                  <span style={{ fontWeight: 400 }}>Duc Nguyen</span>
+                </p>
+                <p>
+                  <span style={{ fontWeight: 700 }}>Date:</span>{" "}
+                  <span style={{ fontWeight: 400 }}>October 25 & November 1</span>
+                </p>
+                <p>
+                  <span style={{ fontWeight: 700 }}>Location:</span>{" "}
+                  <span style={{ fontWeight: 400 }}>
+                    Jefferson Park, Los Angeles
+                  </span>
+                </p>
+              </div>
             </div>
           </div>
         </section>
