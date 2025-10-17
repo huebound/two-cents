@@ -69,7 +69,9 @@ export default function Home() {
     };
     syncRow();
     window.addEventListener("resize", syncRow);
-    try { document?.fonts?.ready?.then?.(() => syncRow()); } catch (_) {}
+    try {
+      document?.fonts?.ready?.then?.(() => syncRow());
+    } catch (_) {}
     return () => window.removeEventListener("resize", syncRow);
   }, []);
 
@@ -153,18 +155,19 @@ export default function Home() {
       <div className="flex min-h-screen flex-col bg-white">
         {/* Header/Nav Bar */}
         <header className="absolute top-0 left-0 right-0 z-50 flex items-start justify-between px-12 py-8">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <img
               src="/images/2C-Landing-Assets/eyeball.png"
               alt="Two Cents Club"
-              className="h-8 w-8"
+              className="h-10 w-10"
             />
-            <span className="text-xl font-medium text-white">
+            <span className="font-medium text-white" style={{ fontSize: '24px' }}>
               Two Cents Club
             </span>
           </div>
           <button
-            className="text-xl font-medium text-white hover:underline"
+            className="font-medium text-white hover:underline"
+            style={{ fontSize: '24px' }}
             onClick={() => setStep("email")}
           >
             Join the Club
@@ -176,7 +179,10 @@ export default function Home() {
           <div className="absolute inset-0">
             <iframe
               src="https://player.vimeo.com/video/1128324777?badge=0&autopause=0&autoplay=1&loop=1&muted=1&background=1"
-              className="absolute left-1/2 top-1/2 h-[56.25vw] min-h-full w-[177.77vh] min-w-full -translate-x-1/2 -translate-y-1/2"
+              className="absolute left-1/2 top-1/2 h-[56.25vw] min-h-full w-[177.77vh] min-w-full"
+              style={{
+                transform: 'translate(-40%, -50%) scale(1.2)'
+              }}
               frameBorder="0"
               allow="autoplay; fullscreen; picture-in-picture"
               title="Hero video"
@@ -185,30 +191,127 @@ export default function Home() {
           <div
             className="absolute inset-0"
             style={{
-              background: 'radial-gradient(49.99% 49.95% at 50% 50%, rgba(0, 0, 0, 0.00) 0%, rgba(0, 0, 0, 0.60) 92.79%)'
+              background:
+                "radial-gradient(49.99% 49.95% at 50% 50%, rgba(0, 0, 0, 0.00) 0%, rgba(0, 0, 0, 0.60) 92.79%)",
             }}
           />
+          <div
+            className="absolute inset-0 flex items-center"
+            style={{ paddingLeft: "118px" }}
+          >
+            <div
+              className="flex flex-col items-start"
+              style={{
+                width: "897px",
+                height: "470px",
+              }}
+            >
+              <h3
+                className="uppercase text-white font-mono"
+                style={{
+                  fontSize: "20px",
+                  fontWeight: 400,
+                  lineHeight: "normal",
+                  marginBottom: "10px",
+                }}
+              >
+                class highlight
+              </h3>
+              <h1
+                className="text-white font-sans"
+                style={{
+                  fontSize: "80px",
+                  fontWeight: 400,
+                  lineHeight: "100%",
+                  letterSpacing: "-1.6px",
+                  maxWidth: "778px",
+                  marginBottom: "32px",
+                }}
+              >
+                The Science and Craft of Coffee
+              </h1>
+              <p
+                className="text-white font-sans"
+                style={{
+                  fontSize: "24px",
+                  fontWeight: 400,
+                  lineHeight: "110%",
+                  maxWidth: "667px",
+                  marginBottom: "36px",
+                }}
+              >
+                Join Duc, a lifelong coffee enthusiast, for an intimate deep
+                dive into espresso. You&apos;ll leave with more than just knowing how
+                to make barista-grade coffee, but a new perspective on the
+                science and artistry behind your cup.
+                <br />
+                <br />
+                Class is limited to 7 people to maintain quality.
+              </p>
+              <Button
+                onClick={() => setStep("email")}
+                className="rounded-full bg-white px-6 py-3 text-base font-medium text-black transition-colors hover:bg-gray-100"
+              >
+                Book a seat
+              </Button>
+            </div>
+          </div>
+          {/* Bottom right details */}
+          <div
+            className="absolute bottom-0 right-0 text-right text-white font-sans"
+            style={{ paddingRight: "118px", paddingBottom: "96px" }}
+          >
+            <div
+              style={{
+                fontSize: "24px",
+                lineHeight: "110%",
+              }}
+            >
+              <p>
+                <span style={{ fontWeight: 700 }}>Taught by:</span>{" "}
+                <span style={{ fontWeight: 400 }}>Duc Nguyen</span>
+              </p>
+              <p>
+                <span style={{ fontWeight: 700 }}>Date:</span>{" "}
+                <span style={{ fontWeight: 400 }}>October 25 & November 1</span>
+              </p>
+              <p>
+                <span style={{ fontWeight: 700 }}>Location:</span>{" "}
+                <span style={{ fontWeight: 400 }}>
+                  Jefferson Park, Los Angeles
+                </span>
+              </p>
+            </div>
+          </div>
         </section>
 
         {/* Hero Section */}
-        <section ref={sectionRef} className="relative isolate w-full overflow-hidden px-6 pb-16 sm:pb-24 lg:px-12">
+        <section
+          ref={sectionRef}
+          className="relative isolate w-full overflow-hidden px-6 pb-16 sm:pb-24 lg:px-12"
+        >
           <div className="mx-auto grid max-w-7xl grid-cols-12 items-start gap-x-8 gap-y-10">
             {/* Copy column */}
             <div className="relative z-20 col-span-12 mt-[54px] max-w-[780px] space-y-[32px] md:col-span-7 lg:h-[897px]">
-              <h1 className="font-medium leading-[1.05] tracking-[-0.04em] text-black" style={{ fontFamily: '"Neue Montreal"', fontSize: "clamp(2.75rem, 6vw, 5rem)" }}>
+              <h1
+                className="font-medium leading-[1.05] tracking-[-0.04em] text-black"
+                style={{
+                  fontFamily: '"Neue Montreal"',
+                  fontSize: "clamp(2.75rem, 6vw, 5rem)",
+                }}
+              >
                 Your curiosity deserves
-                <br />
-                a comeback.
+                <br />a comeback.
               </h1>
               <p className="text-lg leading-relaxed text-slate-700">
                 Remember when learning felt like play? When you explored things
                 just because they sparked joy?
               </p>
               <p className="text-lg leading-relaxed text-slate-700">
-                Two Cents Club brings that feeling
-                back. Join a community of curious minds where passion meets
-                growth—one who still believes in wonder. Explore new skills, meet
-                curious people, and invest your fully in your curiosities.
+                Two Cents Club brings that feeling back. Join a community of
+                curious minds where passion meets growth—one who still believes
+                in wonder. Explore new skills, meet curious people, and invest
+                your fully in your curiosities.
               </p>
               <Button
                 onClick={() => setStep("email")}
@@ -226,7 +329,17 @@ export default function Home() {
                 src="/images/2C-Landing-Assets/penny.png"
                 alt=""
                 className="hero-nudge pointer-events-none absolute z-10 w-[120px] sm:w-[128px] lg:w-[152px]"
-                style={{ top: "10%", left: "8%", filter: "drop-shadow(0 18px 32px rgba(0,0,0,0.18))", '--tx': '50px', '--ty': '0px', '--rot': '-10deg', '--sc': '1' } as React.CSSProperties}
+                style={
+                  {
+                    top: "10%",
+                    left: "8%",
+                    filter: "drop-shadow(0 18px 32px rgba(0,0,0,0.18))",
+                    "--tx": "50px",
+                    "--ty": "0px",
+                    "--rot": "-10deg",
+                    "--sc": "1",
+                  } as React.CSSProperties
+                }
               />
               {/* star moved to the paper wrapper below so it follows the paper */}
               {/* cd moved to the baseline row */}
@@ -250,28 +363,60 @@ export default function Home() {
                     src="/images/2C-Landing-Assets/compass.png"
                     alt=""
                     className="hero-nudge w-[120px] lg:w-[140px]"
-                    style={{ filter: "drop-shadow(0 18px 30px rgba(0,0,0,0.18))", '--tx': '-20px', '--ty': '80px', '--rot': '6deg', '--sc': '1.5' } as React.CSSProperties}
+                    style={
+                      {
+                        filter: "drop-shadow(0 18px 30px rgba(0,0,0,0.18))",
+                        "--tx": "-20px",
+                        "--ty": "80px",
+                        "--rot": "6deg",
+                        "--sc": "1.5",
+                      } as React.CSSProperties
+                    }
                   />
                   {/* bowl */}
                   <img
                     src="/images/2C-Landing-Assets/bowl.png"
                     alt=""
                     className="hero-nudge w-[200px] lg:w-[240px]"
-                    style={{ filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.14))", '--tx': '-30px', '--ty': '80px', '--rot': '0deg', '--sc': '1.25' } as React.CSSProperties}
+                    style={
+                      {
+                        filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.14))",
+                        "--tx": "-30px",
+                        "--ty": "80px",
+                        "--rot": "0deg",
+                        "--sc": "1.25",
+                      } as React.CSSProperties
+                    }
                   />
                   {/* pen */}
                   <img
                     src="/images/2C-Landing-Assets/pen.png"
                     alt=""
                     className="hero-nudge w-[80px] lg:w-[96px]"
-                    style={{ filter: "drop-shadow(0 16px 28px rgba(0,0,0,0.14))", '--tx': '-50px', '--ty': '-6px', '--rot': '-2deg', '--sc': '1.25' } as React.CSSProperties}
+                    style={
+                      {
+                        filter: "drop-shadow(0 16px 28px rgba(0,0,0,0.14))",
+                        "--tx": "-50px",
+                        "--ty": "-6px",
+                        "--rot": "-2deg",
+                        "--sc": "1.25",
+                      } as React.CSSProperties
+                    }
                   />
                   {/* cd */}
                   <img
                     src="/images/2C-Landing-Assets/cd.png"
                     alt=""
                     className="hero-nudge w-[180px] lg:w-[220px]"
-                    style={{ filter: "drop-shadow(0 24px 36px rgba(0,0,0,0.16))", '--tx': '-120px', '--ty': '-180px', '--rot': '-6deg', '--sc': '1' } as React.CSSProperties}
+                    style={
+                      {
+                        filter: "drop-shadow(0 24px 36px rgba(0,0,0,0.16))",
+                        "--tx": "-120px",
+                        "--ty": "-180px",
+                        "--rot": "-6deg",
+                        "--sc": "1",
+                      } as React.CSSProperties
+                    }
                   />
                 </div>
                 {/* paper clip pinned to the left screen edge moved to section level */}
@@ -285,7 +430,17 @@ export default function Home() {
               src="/images/2C-Landing-Assets/paper-clip.png"
               alt=""
               className="hero-nudge pointer-events-none absolute left-0 -ml-6 hidden sm:block lg:-ml-12"
-              style={{ top: `${rowTop + 25}px`, width: "clamp(44px, 5vw, 72px)", filter: "drop-shadow(0 12px 24px rgba(0,0,0,0.12))", '--tx': '70px', '--ty': '30px', '--rot': '-12deg', '--sc': '3' } as React.CSSProperties}
+              style={
+                {
+                  top: `${rowTop + 25}px`,
+                  width: "clamp(44px, 5vw, 72px)",
+                  filter: "drop-shadow(0 12px 24px rgba(0,0,0,0.12))",
+                  "--tx": "70px",
+                  "--ty": "30px",
+                  "--rot": "-12deg",
+                  "--sc": "3",
+                } as React.CSSProperties
+              }
             />
           )}
 
@@ -305,7 +460,19 @@ export default function Home() {
                 src="/images/2C-Landing-Assets/gold star.png"
                 alt=""
                 className="hero-nudge pointer-events-none absolute z-30"
-                style={{ top: "8%", left: "70%", width: "clamp(40px, 5vw, 68px)", filter: "drop-shadow(0 14px 28px rgba(0,0,0,0.14))", transformOrigin: "center", '--tx': '-90px', '--ty': '70px', '--rot': '0deg', '--sc': '2' } as React.CSSProperties}
+                style={
+                  {
+                    top: "8%",
+                    left: "70%",
+                    width: "clamp(40px, 5vw, 68px)",
+                    filter: "drop-shadow(0 14px 28px rgba(0,0,0,0.14))",
+                    transformOrigin: "center",
+                    "--tx": "-90px",
+                    "--ty": "70px",
+                    "--rot": "0deg",
+                    "--sc": "2",
+                  } as React.CSSProperties
+                }
               />
             </div>
           </div>
@@ -322,10 +489,10 @@ export default function Home() {
                     Discover experiences made for you.
                   </h2>
                   <p className="text-lg leading-relaxed">
-                    We curated just enough choice to explore something that fires
-                    your interests, but not so many that choosing is hard. Explore
-                    experiences about what you&rsquo;re curious about, what marks the
-                    real.
+                    We curated just enough choice to explore something that
+                    fires your interests, but not so many that choosing is hard.
+                    Explore experiences about what you&rsquo;re curious about,
+                    what marks the real.
                   </p>
                 </div>
                 <img
@@ -356,9 +523,9 @@ export default function Home() {
                     Collect memories (and stickers).
                   </h2>
                   <p className="text-lg leading-relaxed">
-                    Track your progress, celebrate small wins. Stick cool stickers
-                    onto your curiosity patchboard, because growth has to stay fun
-                    in the journey, not the fun.
+                    Track your progress, celebrate small wins. Stick cool
+                    stickers onto your curiosity patchboard, because growth has
+                    to stay fun in the journey, not the fun.
                   </p>
                 </div>
               </div>
@@ -372,8 +539,9 @@ export default function Home() {
                     Meet people who make you think.
                   </h2>
                   <p className="text-lg leading-relaxed">
-                    Join in-person (and occasionally digital) as we host one another. Learn something new together. Connect deeply
-                    with people who share the same fire for your interests.
+                    Join in-person (and occasionally digital) as we host one
+                    another. Learn something new together. Connect deeply with
+                    people who share the same fire for your interests.
                   </p>
                 </div>
                 <div className="flex-1">
@@ -481,7 +649,9 @@ export default function Home() {
         {/* Footer */}
         <footer className="bg-white px-6 py-8 lg:px-12">
           <div className="relative mx-auto flex max-w-6xl items-center justify-center">
-            <span className="absolute left-0 text-sm text-gray-600">© Two Cents Club</span>
+            <span className="absolute left-0 text-sm text-gray-600">
+              © Two Cents Club
+            </span>
             <div className="flex gap-6">
               <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
                 X
@@ -493,7 +663,9 @@ export default function Home() {
                 Instagram
               </a>
             </div>
-            <span className="absolute right-0 text-sm text-gray-600">Restoring child-like curiosity</span>
+            <span className="absolute right-0 text-sm text-gray-600">
+              Restoring child-like curiosity
+            </span>
           </div>
         </footer>
       </div>
