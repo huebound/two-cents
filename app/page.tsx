@@ -78,6 +78,11 @@ export default function Home() {
   }, []);
 
   const handleSendOtp = async () => {
+    if (!firstName || !lastName) {
+      setError("Please enter your first and last name.");
+      return;
+    }
+
     if (!email) {
       setError("Enter an email address to continue.");
       return;
@@ -119,17 +124,41 @@ export default function Home() {
       type: "email",
     });
 
-    setIsLoading(false);
-
     if (verifyError) {
+      setIsLoading(false);
       setError(verifyError.message);
       return;
     }
 
-    if (!data?.session) {
+    if (!data?.session || !data?.user) {
+      setIsLoading(false);
       setError("We couldn't finish signing you in. Try again.");
       return;
     }
+
+    // Save the user's name to their profile
+    if (firstName || lastName) {
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .upsert(
+          {
+            id: data.user.id,
+            first_name: firstName || null,
+            last_name: lastName || null,
+          } as never,
+          { onConflict: "id" }
+        );
+
+      if (profileError) {
+        setIsLoading(false);
+        setError("Sign in successful, but we couldn't save your name. Please update it in your profile.");
+        // Still proceed to success since auth worked
+        setStep("success");
+        return;
+      }
+    }
+
+    setIsLoading(false);
 
     // Show success screen instead of routing
     setStep("success");
@@ -707,6 +736,7 @@ export default function Home() {
                       placeholder="First"
                       autoComplete="given-name"
                       className="flex-1 h-9 text-sm"
+                      required
                     />
                     <Input
                       id="lastName"
@@ -716,6 +746,7 @@ export default function Home() {
                       placeholder="Last"
                       autoComplete="family-name"
                       className="flex-1 h-9 text-sm"
+                      required
                     />
                   </div>
                 </div>
@@ -732,6 +763,7 @@ export default function Home() {
                     placeholder="hello@twocents.com"
                     autoComplete="email"
                     className="h-9 text-sm"
+                    required
                   />
                 </div>
 
