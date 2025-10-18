@@ -22,6 +22,8 @@ export default function Home() {
   const supabase = createSupabaseClient();
   const [step, setStep] = useState<Step>("landing");
   const [email, setEmail] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [otp, setOtp] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -129,16 +131,8 @@ export default function Home() {
       return;
     }
 
-    // Check if user has completed onboarding
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (user?.user_metadata?.onboarded) {
-      router.push("/home");
-    } else {
-      router.push("/onboarding");
-    }
+    // Show success screen instead of routing
+    setStep("success");
   };
 
   const handleReset = () => {
@@ -663,50 +657,98 @@ export default function Home() {
 
   if (step === "email") {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <main className="flex w-full max-w-md flex-col items-center gap-8 px-4">
-          <h1 className="text-4xl text-center">Join the Club</h1>
-          <form
-            className="w-full space-y-6"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void handleSendOtp();
-            }}
-          >
-            <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="email">
-                Email address
-              </label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                autoComplete="email"
-              />
-            </div>
+      <div className="flex min-h-screen flex-col bg-white">
+        {/* Header/Nav Bar - without Join button */}
+        <header className="absolute top-0 left-0 right-0 z-50 flex items-start justify-between px-6 py-4 md:px-12 md:py-8">
+          <div className="flex items-center gap-2 md:gap-3">
+            <img
+              src="/images/2C-Landing-Assets/eyeball.png"
+              alt="Two Cents Club"
+              className="h-6 w-6 md:h-10 md:w-10"
+            />
+            <span className="font-medium text-black text-base md:text-[24px]">
+              Two Cents Club
+            </span>
+          </div>
+        </header>
 
-            {error ? (
-              <p className="text-sm text-red-600" role="alert">
-                {error}
-              </p>
-            ) : null}
-
-            <div className="flex items-center gap-3">
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Sending code..." : "Send code"}
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={handleReset}
-                disabled={isLoading}
+        <main className="flex flex-1 items-center justify-center px-4 pt-24">
+          <div className="flex w-full flex-col items-center gap-6 md:gap-8">
+            <h1
+              className="text-center font-sans max-w-[316px] md:max-w-[511px]"
+              style={{
+                color: "#000",
+                fontSize: "clamp(25px, 4vw, 40px)",
+                fontStyle: "normal",
+                fontWeight: 500,
+                lineHeight: "95%",
+              }}
+            >
+              Welcome to Two Cents Club. Join our community to come to your first event!
+            </h1>
+            <div className="w-full max-w-[300px] md:max-w-[380px] rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+              <form
+                className="space-y-3"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void handleSendOtp();
+                }}
               >
-                Cancel
-              </Button>
+                <div className="grid grid-cols-[80px_1fr] md:grid-cols-[100px_1fr] items-center gap-3">
+                  <label className="text-base font-medium" htmlFor="firstName">
+                    Name
+                  </label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="firstName"
+                      type="text"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      placeholder="First"
+                      autoComplete="given-name"
+                      className="flex-1 h-9 text-sm"
+                    />
+                    <Input
+                      id="lastName"
+                      type="text"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      placeholder="Last"
+                      autoComplete="family-name"
+                      className="flex-1 h-9 text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-[80px_1fr] md:grid-cols-[100px_1fr] items-center gap-3">
+                  <label className="text-base font-medium" htmlFor="email">
+                    Email
+                  </label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="hello@twocents.com"
+                    autoComplete="email"
+                    className="h-9 text-sm"
+                  />
+                </div>
+
+                {error ? (
+                  <p className="text-xs text-red-600" role="alert">
+                    {error}
+                  </p>
+                ) : null}
+
+                <div className="flex justify-center pt-1">
+                  <Button type="submit" disabled={isLoading} className="px-8 h-9 text-sm">
+                    {isLoading ? "Submitting..." : "Submit"}
+                  </Button>
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
         </main>
       </div>
     );
@@ -714,81 +756,115 @@ export default function Home() {
 
   if (step === "otp") {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <main className="flex w-full max-w-md flex-col items-center gap-8 px-4">
-          <h1 className="text-4xl text-center">
-            Enter your {OTP_LENGTH}-digit code
-          </h1>
-          <form
-            className="w-full space-y-6"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void handleVerifyOtp();
-            }}
-          >
-            <div className="flex flex-col items-center gap-4">
-              <InputOTP
-                maxLength={OTP_LENGTH}
-                value={otp}
-                onChange={setOtp}
-                containerClassName="justify-center"
-              >
-                <InputOTPGroup>
-                  <InputOTPSlot index={0} aria-label="Digit 1" />
-                  <InputOTPSlot index={1} aria-label="Digit 2" />
-                  <InputOTPSlot index={2} aria-label="Digit 3" />
-                </InputOTPGroup>
-                <InputOTPSeparator />
-                <InputOTPGroup>
-                  <InputOTPSlot index={3} aria-label="Digit 4" />
-                  <InputOTPSlot index={4} aria-label="Digit 5" />
-                  <InputOTPSlot index={5} aria-label="Digit 6" />
-                </InputOTPGroup>
-              </InputOTP>
-              <p className="text-sm text-muted-foreground">
-                Code sent to {email}
-              </p>
-            </div>
+      <div className="flex min-h-screen flex-col bg-white">
+        {/* Header/Nav Bar - without Join button */}
+        <header className="absolute top-0 left-0 right-0 z-50 flex items-start justify-between px-6 py-4 md:px-12 md:py-8">
+          <div className="flex items-center gap-2 md:gap-3">
+            <img
+              src="/images/2C-Landing-Assets/eyeball.png"
+              alt="Two Cents Club"
+              className="h-6 w-6 md:h-10 md:w-10"
+            />
+            <span className="font-medium text-black text-base md:text-[24px]">
+              Two Cents Club
+            </span>
+          </div>
+        </header>
 
-            {statusMessage ? (
-              <p className="text-sm text-foreground" role="status">
-                {statusMessage}
-              </p>
-            ) : null}
+        <main className="flex flex-1 items-center justify-center px-4 pt-24">
+          <div className="flex w-full max-w-md flex-col items-center gap-8">
+            <h1
+              className="text-center font-sans"
+              style={{
+                color: "#000",
+                fontSize: "40px",
+                fontStyle: "normal",
+                fontWeight: 500,
+                lineHeight: "95%",
+              }}
+            >
+              Almost in! Check your email for a confirmation code.
+            </h1>
+            <form
+              className="w-full space-y-6"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void handleVerifyOtp();
+              }}
+            >
+              <div className="flex flex-col items-center gap-4">
+                <InputOTP
+                  maxLength={OTP_LENGTH}
+                  value={otp}
+                  onChange={setOtp}
+                  containerClassName="justify-center"
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} aria-label="Digit 1" />
+                    <InputOTPSlot index={1} aria-label="Digit 2" />
+                    <InputOTPSlot index={2} aria-label="Digit 3" />
+                  </InputOTPGroup>
+                  <InputOTPSeparator />
+                  <InputOTPGroup>
+                    <InputOTPSlot index={3} aria-label="Digit 4" />
+                    <InputOTPSlot index={4} aria-label="Digit 5" />
+                    <InputOTPSlot index={5} aria-label="Digit 6" />
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
 
-            {error ? (
-              <p className="text-sm text-red-600" role="alert">
-                {error}
-              </p>
-            ) : null}
+              {error ? (
+                <p className="text-sm text-red-600 text-center" role="alert">
+                  {error}
+                </p>
+              ) : null}
 
-            <div className="flex items-center gap-3">
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Verifying..." : "Verify"}
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => setStep("email")}
-                disabled={isLoading}
-              >
-                Edit email
-              </Button>
-            </div>
-          </form>
+              <div className="flex justify-center">
+                <Button type="submit" disabled={isLoading} className="px-8">
+                  {isLoading ? "Verifying..." : "Verify"}
+                </Button>
+              </div>
+            </form>
+          </div>
         </main>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <main className="flex w-full max-w-md flex-col items-center gap-8 px-4 text-center">
-        <h1 className="text-4xl">All set!</h1>
-        {statusMessage ? <p className="text-lg">{statusMessage}</p> : null}
-        <Button type="button" onClick={handleReset} variant="outline">
-          Sign out
-        </Button>
+    <div className="flex min-h-screen flex-col bg-white">
+      {/* Header/Nav Bar - without Join button */}
+      <header className="absolute top-0 left-0 right-0 z-50 flex items-start justify-between px-6 py-4 md:px-12 md:py-8">
+        <div className="flex items-center gap-2 md:gap-3">
+          <img
+            src="/images/2C-Landing-Assets/eyeball.png"
+            alt="Two Cents Club"
+            className="h-6 w-6 md:h-10 md:w-10"
+          />
+          <span className="font-medium text-black text-base md:text-[24px]">
+            Two Cents Club
+          </span>
+        </div>
+      </header>
+
+      <main className="flex flex-1 items-center justify-center px-4 pt-24">
+        <div className="flex w-full max-w-lg flex-col items-center gap-6 text-center">
+          <h1
+            className="font-sans"
+            style={{
+              color: "#000",
+              fontSize: "40px",
+              fontStyle: "normal",
+              fontWeight: 500,
+              lineHeight: "95%",
+            }}
+          >
+            Thank you for signing up!
+          </h1>
+          <p className="text-lg text-gray-700">
+            Keep an eye out on your inbox. We&apos;ll email you as soon as class sign-ups open.
+          </p>
+        </div>
       </main>
     </div>
   );
