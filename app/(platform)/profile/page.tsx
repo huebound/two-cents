@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import ProfileForm from "./profile-form";
+import LogoutButton from "./logout-button";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -32,11 +33,14 @@ export default async function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-2xl space-y-8">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-semibold text-gray-900">Profile</h1>
-        <p className="text-sm text-gray-600">
-          Update how other members see you and what you want to teach or learn.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-semibold text-gray-900">Profile</h1>
+          <p className="text-sm text-gray-600">
+            Update how other members see you and what you want to teach or learn.
+          </p>
+        </div>
+        <LogoutButton />
       </div>
 
       <ProfileForm
