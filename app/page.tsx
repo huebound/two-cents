@@ -177,153 +177,64 @@ export default function Home() {
     return (
       <div className="flex min-h-screen flex-col bg-white">
         {/* Header/Nav Bar */}
-        <header className="absolute top-0 left-0 right-0 z-50 flex items-start justify-between px-6 py-4 md:px-12 md:py-8">
+        <header className="absolute top-0 left-0 right-0 z-50 px-6 py-4 md:px-12 md:py-8">
+          <div className="mx-auto flex w-full max-w-7xl items-start justify-between">
           <div className="flex items-center gap-2 md:gap-3">
             <img
-              src="/images/2C-Landing-Assets/eyeball.png"
+              src="/images/2C-Landing-Assets/googly-eye.png"
               alt="Two Cents Club"
               className="h-6 w-6 md:h-10 md:w-10"
             />
-            <span className="font-medium text-white text-base md:text-[24px]">
+            <span className="font-medium text-black text-base md:text-[24px]"
+              style={{
+                fontFamily: 'TOMO Bossa',
+              }}
+            >
               Two Cents Club
             </span>
           </div>
           <button
-            className="font-medium text-white hover:underline text-base md:text-[24px]"
+            className="font-medium text-black hover:underline text-base md:text-[24px]"
+            style={{
+                fontFamily: 'TOMO Bossa',
+            }}
             onClick={() => setStep("email")}
           >
             Join the Club
           </button>
+          </div>
         </header>
-
-        {/* Video Hero Section */}
-        <section className="relative h-screen w-full overflow-hidden">
-          <div className="absolute inset-0">
-            <iframe
-              src="https://player.vimeo.com/video/1128324777?badge=0&autopause=0&autoplay=1&loop=1&muted=1&background=1"
-              className="absolute left-1/2 top-1/2 h-[56.25vw] min-h-full w-[177.77vh] min-w-full"
-              style={{
-                transform: 'translate(-60%, -50%) scale(1.2)',
-              }}
-              frameBorder="0"
-              allow="autoplay; fullscreen; picture-in-picture"
-              title="Hero video"
-            />
-            <style jsx>{`
-              @media (min-width: 768px) {
-                iframe {
-                  transform: translate(-40%, -50%) scale(1.2) !important;
-                }
-              }
-            `}</style>
-          </div>
-          <div className="absolute inset-0 bg-black/60 md:bg-black/40" />
-          <div className="absolute inset-0 flex flex-col justify-between p-6 md:p-0">
-            {/* Main content */}
-            <div className="flex items-center justify-center flex-1 md:justify-start md:pl-[118px]">
-              <div className="flex flex-col items-center md:items-start max-w-full md:max-w-[897px]">
-                <h3
-                  className="uppercase text-white font-mono text-[16px] md:text-[20px] mb-2 md:mb-[10px] text-center md:text-left"
-                  style={{
-                    fontWeight: 400,
-                    lineHeight: "normal",
-                  }}
-                >
-                  class highlight
-                </h3>
-                <h1
-                  className="text-white font-sans mb-4 md:mb-8 text-center md:text-left"
-                  style={{
-                    fontSize: "clamp(52px, 8vw, 72px)",
-                    fontWeight: 400,
-                    lineHeight: "100%",
-                    letterSpacing: "-1.6px",
-                    maxWidth: "778px",
-                  }}
-                >
-                  The Science and Craft of Coffee
-                </h1>
-                <p
-                  className="text-white font-sans text-[18px] md:text-[24px] mb-6 md:mb-9 text-center md:text-left px-8 md:px-0"
-                  style={{
-                    fontWeight: 400,
-                    lineHeight: "110%",
-                    maxWidth: "667px",
-                  }}
-                >
-                  Join Duc, a lifelong coffee enthusiast, for an intimate deep
-                  dive into espresso. You&apos;ll leave with more than just knowing how
-                  to make barista-grade coffee, but a new perspective on the
-                  science and artistry behind your cup.
-                  <br />
-                  <br />
-                  Class is limited to 7 people to maintain quality.
-                </p>
-                <Button
-                  onClick={() => setStep("email")}
-                  className="rounded-full bg-white px-6 py-3 text-base font-medium text-black transition-colors hover:bg-gray-100"
-                >
-                  Book a seat
-                </Button>
-              </div>
-            </div>
-
-            {/* Bottom right details */}
-            <div className="text-center md:text-right text-white font-sans mt-6 md:mt-0 md:absolute md:bottom-0 md:right-0 md:pr-[118px] md:pb-[96px]">
-              <div
-                className="text-[18px] md:text-[24px]"
-                style={{
-                  lineHeight: "110%",
-                }}
-              >
-                <p>
-                  <span style={{ fontWeight: 700 }}>Taught by:</span>{" "}
-                  <span style={{ fontWeight: 400 }}>Duc Nguyen</span>
-                </p>
-                <p>
-                  <span style={{ fontWeight: 700 }}>Date:</span>{" "}
-                  <span style={{ fontWeight: 400 }}>October 25 & November 1</span>
-                </p>
-                <p>
-                  <span style={{ fontWeight: 700 }}>Location:</span>{" "}
-                  <span style={{ fontWeight: 400 }}>
-                    Jefferson Park, Los Angeles
-                  </span>
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* Hero Section */}
         <section
           ref={sectionRef}
-          className="relative isolate w-full overflow-hidden px-6 pb-16 sm:pb-24 lg:px-12"
+          className="relative isolate w-full overflow-hidden px-6 sm:py-24 md:px-12"
         >
           <div className="mx-auto grid max-w-7xl grid-cols-12 items-start gap-x-8 gap-y-10">
             {/* Copy column */}
-            <div className="relative z-20 col-span-12 mt-[54px] max-w-[780px] space-y-[32px] md:col-span-7 lg:h-[897px] mx-auto md:mx-0">
+            <div className="relative z-20 col-span-12 mt-[64px] md:mt-[80px] max-w-[780px] space-y-[32px] md:col-span-7 lg:h-[897px] mx-auto md:mx-0">
               <h1
-                className="font-medium leading-[1.05] tracking-[-0.04em] text-black text-center md:text-left"
+                className="leading-[1.05] tracking-[-0.04em] text-left"
                 style={{
-                  fontFamily: '"Neue Montreal"',
+                  fontFamily: 'TOMO Bossa',
+                  letterSpacing: '-0.01em',
                   fontSize: "clamp(2.75rem, 6vw, 5rem)",
                 }}
               >
-                Your curiosity deserves
-                <br />a comeback.
+                Your curiosity deserves 
+                <br/>a comeback.
               </h1>
-              <p className="text-lg leading-relaxed text-slate-700 text-center md:text-left">
+              <p className="text-xl tracking-[-0.01em] text-slate-700 text-left">
                 Remember when learning felt like play? When you explored things
                 just because they sparked joy?
               </p>
-              <p className="text-lg leading-relaxed text-slate-700 text-center md:text-left">
+              <p className="text-xl tracking-[-0.01em] text-slate-700 text-left">
                 Two Cents Club brings that feeling back. Join a community of
                 curious minds where passion meets growth—one who still believes
                 in wonder. Explore new skills, meet curious people, and invest
                 your fully in your curiosities.
               </p>
-              <div className="flex justify-center md:justify-start">
+              {/* <div className="flex justify-center md:justify-start">
                 <Button
                   onClick={() => setStep("email")}
                   ref={ctaRef}
@@ -331,7 +242,7 @@ export default function Home() {
                 >
                   Join the Waitlist
                 </Button>
-              </div>
+              </div> */}
             </div>
 
             {/* Artboard column (places images by % inside a stable box) */}
@@ -368,11 +279,11 @@ export default function Home() {
               className="pointer-events-none absolute left-0 right-0 hidden sm:block"
               style={{ top: rowTop }}
             >
-              <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
+              <div className="relative mx-auto max-w-7xl px-6 md:px-12">
                 <div className="flex h-[240px] items-end justify-between gap-6 lg:h-[280px]">
                   {/* compass */}
                   <img
-                    src="/images/2C-Landing-Assets/compass.png"
+                    src="/images/2C-Landing-Assets/elizabeth-caricature.png"
                     alt=""
                     className="hero-nudge w-[120px] lg:w-[140px]"
                     style={
@@ -435,26 +346,6 @@ export default function Home() {
               </div>
             </div>
           )}
-          {/* Paper pinned to right screen edge with star overlay (see wrapper below) */}
-          {/* Paper clip pinned to viewport left edge near the baseline row (nudgeable) */}
-          {rowTop !== null && (
-            <img
-              src="/images/2C-Landing-Assets/paper-clip.png"
-              alt=""
-              className="hero-nudge pointer-events-none absolute left-0 -ml-6 hidden sm:block lg:-ml-12"
-              style={
-                {
-                  top: `${rowTop + 25}px`,
-                  width: "clamp(44px, 5vw, 72px)",
-                  filter: "drop-shadow(0 12px 24px rgba(0,0,0,0.12))",
-                  "--tx": "70px",
-                  "--ty": "30px",
-                  "--rot": "-12deg",
-                  "--sc": "3",
-                } as React.CSSProperties
-              }
-            />
-          )}
 
           {/* Paper pinned to right screen edge with star overlay, wrapper keeps them together */}
           <div
@@ -491,50 +382,57 @@ export default function Home() {
         </section>
 
         {/* Three Feature Sections Container */}
-        <div className="bg-white px-12 py-12">
+        <div className="bg-white px-6 py-12 md:px-12">
           <div className="mx-auto flex max-w-7xl flex-col gap-6">
             {/* Discover Experiences Section */}
-            <section className="rounded-[16px] bg-[#A94442] px-6 py-20 text-white lg:px-12">
-              <div className="relative mx-auto max-w-6xl">
-                <div className="max-w-xl">
-                  <h2 className="mb-4 text-4xl font-bold lg:text-5xl">
-                    Discover experiences made for you.
+            <section className="overflow-hidden rounded-[16px] bg-[#C94256] px-12 py-12 text-white md:py-20 lg:px-12">
+              <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 md:flex-row md:gap-12">
+                <div className="min-w-0 flex-1">
+                  <h2 className="mb-4 text-4xl font-bold lg:text-5xl leading-[1.3em]"
+                    style={{
+                      fontFamily: 'TOMO Bossa',
+                      letterSpacing: '0.03em',
+                    }}
+                  >
+                    Discover experiences made just for you.
                   </h2>
-                  <p className="text-lg leading-relaxed">
+                  <p className="text-lg">
                     We curated just enough choice to explore something that
                     fires your interests, but not so many that choosing is hard.
                     Explore experiences about what you&rsquo;re curious about,
                     what marks the real.
                   </p>
                 </div>
-                <img
-                  src="/images/2C-Landing-Assets/palette.png"
-                  alt=""
-                  className="absolute left-[5%] bottom-[10%] w-20 -rotate-12 lg:w-24"
-                />
-                <img
-                  src="/images/2C-Landing-Assets/art-pieces.png"
-                  alt="Art and creative experiences"
-                  className="absolute right-0 top-1/2 w-48 -translate-y-1/2 rotate-6 lg:w-64"
-                />
+                <div className="w-full flex-1">
+                  <img
+                    src="/images/2C-Landing-Assets/art-pieces.png"
+                    alt="Art pieces"
+                    className="w-full"
+                  />
+                </div>
               </div>
             </section>
 
             {/* Collect Memories Section */}
-            <section className="rounded-[16px] bg-[#4A90E2] px-6 py-20 text-white lg:px-12">
-              <div className="mx-auto flex max-w-6xl items-center gap-12">
-                <div className="flex-1">
+            <section className="overflow-hidden rounded-[16px] bg-[#4A90E2] px-12 py-12 text-white md:py-20 lg:px-12">
+              <div className="mx-auto flex max-w-6xl flex-col-reverse items-center gap-8 md:flex-row md:gap-12">
+                <div className="w-full flex-1">
                   <img
-                    src="/images/2C-Landing-Assets/sticker-sheet.png"
+                    src="/images/2C-Landing-Assets/punchcard.png"
                     alt="Sticker collection"
-                    className="w-full max-w-md"
+                    className="w-full"
                   />
                 </div>
-                <div className="flex-1">
-                  <h2 className="mb-4 text-4xl font-bold lg:text-5xl">
+                <div className="min-w-0 flex-1">
+                  <h2 className="mb-4 text-4xl font-bold lg:text-5xl leading-[1.3em]"
+                    style={{
+                      fontFamily: 'TOMO Bossa',
+                      letterSpacing: '0.03em',
+                    }}
+                  >
                     Collect memories (and stickers).
                   </h2>
-                  <p className="text-lg leading-relaxed">
+                  <p className="text-lg">
                     Track your progress, celebrate small wins. Stick cool
                     stickers onto your curiosity patchboard, because growth has
                     to stay fun in the journey, not the fun.
@@ -544,23 +442,28 @@ export default function Home() {
             </section>
 
             {/* Meet People Section */}
-            <section className="rounded-[16px] bg-[#4A9B8E] px-6 py-20 text-white lg:px-12">
-              <div className="mx-auto flex max-w-6xl items-center gap-12">
-                <div className="flex-1">
-                  <h2 className="mb-4 text-4xl font-bold lg:text-5xl">
+            <section className="overflow-hidden rounded-[16px] bg-[#4A9B8E] px-12 py-12 text-white md:py-20 lg:px-12">
+              <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 md:flex-row md:gap-12">
+                <div className="min-w-0 flex-1">
+                  <h2 className="mb-4 text-4xl font-bold lg:text-5xl leading-[1.3em]"
+                    style={{
+                      fontFamily: 'TOMO Bossa',
+                      letterSpacing: '0.03em',
+                    }}
+                  >
                     Meet people who make you think.
                   </h2>
-                  <p className="text-lg leading-relaxed">
-                    Join in-person (and occasionally digital) as we host one
-                    another. Learn something new together. Connect deeply with
+                  <p className="text-lg">
+                    Join in-person as we host one another.
+                    Learn something new together. Connect deeply with
                     people who share the same fire for your interests.
                   </p>
                 </div>
-                <div className="flex-1">
+                <div className="w-full flex-1">
                   <img
-                    src="/images/2C-Landing-Assets/tcc-circle.png"
+                    src="/images/2C-Landing-Assets/candle-workshop.png"
                     alt="Two Cents Club circle"
-                    className="w-full max-w-md"
+                    className="w-full"
                   />
                 </div>
               </div>
@@ -569,77 +472,117 @@ export default function Home() {
         </div>
 
         {/* Testimonials Section */}
-        <section className="relative bg-white px-6 py-20 lg:px-12">
-          <div className="relative mx-auto max-w-4xl text-center">
-            <div className="mb-12 flex items-center justify-center gap-8">
-              <img
-                src="/images/2C-Landing-Assets/ethan.png"
-                alt="Ethan"
-                className="h-16 w-16 rounded-full object-cover"
-              />
+        <section
+          className="relative px-6 py-20 lg:px-12"
+          style={{
+            backgroundImage: "url('/images/2C-Landing-Assets/paper-sheets.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
+          <div className="relative mx-auto max-w-7xl">
+            {/* Header decoration */}
+            <div className="mb-6 flex items-center justify-center gap-4">
               <div className="text-3xl">→</div>
               <img
                 src="/images/2C-Landing-Assets/eyeball-doodle.png"
                 alt=""
-                className="w-12"
+                className="w-10"
               />
             </div>
-            <h2 className="mb-4 text-4xl font-bold lg:text-5xl">
-              Loved by learners of all kinds.
-            </h2>
-            <p className="mb-8 text-lg text-gray-700">
-              Inspired to much, truly grateful to Two Cents for the welcoming
-              community it creates in learning!
-            </p>
-            <div className="flex items-center justify-center gap-8">
+
+            {/* Ethan: far left, shifted up */}
+            <div className="mb-8 flex items-end gap-3 md:gap-5 max-w-xs md:max-w-sm lg:max-w-md">
               <img
-                src="/images/2C-Landing-Assets/doodle1.png"
+                src="/images/2C-Landing-Assets/ethan.png"
+                alt="Ethan"
+                className="flex-shrink-0 w-24 md:w-36 lg:w-44"
+              />
+              <div className="relative min-w-0 flex-1 -translate-y-6 md:-translate-y-14">
+                {/* Tail pointing left */}
+                <span className="absolute left-0 top-5 -translate-x-[5px] block h-3 w-3 rotate-45 border-b border-l bg-white/10" />
+                <div className="rounded-2xl border border-white/30 bg-white/10 px-4 py-3 shadow-xl backdrop-blur-xl md:px-5 md:py-4">
+                  <p className="text-sm md:text-base">
+                    &ldquo;I learned so much... truly grateful to Two Cents for the welcoming community &amp; wonderful learning.&rdquo;
+                  </p>
+                  <p className="mt-2 text-xs font-medium md:text-sm">— Ethan</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Heading centered */}
+            <div className="mb-8 text-center mx-auto max-w-lg">
+              <h2 className="mb-3 leading-[1.25em]"
+                style={{
+                  fontFamily: 'TOMO Bossa',
+                  letterSpacing: '0.03em',
+                  fontSize: "clamp(2.75rem, 6vw, 4rem)",
+                }}
+              >
+                Loved by learners
+                <br/> of all kinds.
+              </h2>
+              <img
+                src="/images/2C-Landing-Assets/doodle2.png"
                 alt=""
-                className="w-8"
-              />
-              <img
-                src="/images/2C-Landing-Assets/mia.png"
-                alt="Mia"
-                className="h-16 w-16 rounded-full object-cover"
+                className="mx-auto w-full max-w-xs"
               />
             </div>
-            <p className="mt-8 text-lg text-gray-700">
-              Inspired to much, truly grateful to Two Cents for the welcoming
-              community it creates in learning!
-            </p>
+
+            {/* Mia: far right, shifted down */}
+            <div className="flex items-start gap-3 md:gap-5 max-w-xs md:max-w-sm lg:max-w-md ml-auto">
+              <div className="relative min-w-0 flex-1 translate-y-6 md:translate-y-14">
+                <div className="rounded-2xl border border-white/30 bg-white/10 px-4 py-3 shadow-xl backdrop-blur-xl md:px-5 md:py-4">
+                  <p className="text-sm md:text-base">
+                    &ldquo;I&rsquo;ve had a blast discovering all the classes Two Cents has to offer. From candlemaking to coffee, I&rsquo;ve begun to explore things I never thought I&rsquo;d have the chance to. Forever grateful!&rdquo;
+                  </p>
+                  <p className="mt-2 text-xs font-medium md:text-sm">— Mia</p>
+                </div>
+                {/* Tail pointing right */}
+                <span className="absolute right-0 top-5 translate-x-[5px] block h-3 w-3 rotate-45 border-r border-t bg-white/10" />
+              </div>
+              <img
+                src="/images/2C-Landing-Assets/mia-decorated.png"
+                alt="Mia"
+                className="flex-shrink-0 w-24 md:w-36 lg:w-44"
+              />
+            </div>
 
             {/* Decorative elements */}
             <img
-              src="/images/2C-Landing-Assets/paper-sheets.png"
+              src="/images/2C-Landing-Assets/doodle1.png"
               alt=""
-              className="absolute right-[8%] top-[20%] w-28 rotate-6 opacity-60 lg:w-36"
+              className="absolute left-[2%] bottom-[5%] w-7 opacity-70"
             />
             <img
               src="/images/2C-Landing-Assets/candle-doodle.png"
               alt=""
-              className="absolute right-[5%] bottom-[10%] w-16 lg:w-20"
-            />
-            <img
-              src="/images/2C-Landing-Assets/doodle2.png"
-              alt=""
-              className="absolute left-[15%] top-[30%] w-10 lg:w-12"
+              className="absolute right-[2%] bottom-[5%] w-14 lg:w-16"
             />
           </div>
         </section>
 
         {/* Final CTA Section */}
-        <div className="bg-white px-12 py-12">
-          <section className="relative overflow-hidden rounded-[16px] bg-[#5A7A5E] px-6 py-32 text-center text-white lg:px-12">
+        <div className="bg-white px-6 py-12 md:px-12">
+          <div className="mx-auto max-w-7xl">
+          <section className="relative overflow-hidden rounded-[16px] bg-[#244729] px-6 py-32 text-center text-white lg:px-12">
             <img
               src="/images/2C-Landing-Assets/bg-gathering.png"
               alt=""
               className="absolute inset-0 h-full w-full object-cover opacity-40"
             />
-            <div className="relative z-10 mx-auto max-w-2xl">
-              <h2 className="mb-6 text-4xl font-bold lg:text-5xl">
+            <div className="relative z-10 px-12 mx-auto max-w-2xl">
+              <h2 className="mb-6 leading-[1.25em]"
+                style={{
+                  fontFamily: 'TOMO Bossa',
+                  letterSpacing: '0.03em',
+                  fontSize: "clamp(2.75rem, 6vw, 4rem)",
+                }}
+              >
                 Ready to learn something new?
               </h2>
-              <p className="mb-8 text-lg leading-relaxed">
+              <p className="mb-8 text-l lg:text-xl tracking-[-0.01em]">
                 Invest in your mind, feed your curiosity, and meet this kind of
                 people who challenge you to grow. Join Two Cents Club.
               </p>
@@ -656,22 +599,23 @@ export default function Home() {
               </Button>
             </div>
           </section>
+          </div>
         </div>
 
         {/* Footer */}
-        <footer className="bg-white px-6 py-8 lg:px-12">
-          <div className="relative mx-auto flex max-w-6xl items-center justify-center">
+        <footer className="bg-white px-6 py-8 md:px-12">
+          <div className="relative mx-auto flex max-w-7xl items-center justify-center">
             <span className="absolute left-0 text-sm text-gray-600">
               © Two Cents Club
             </span>
             <div className="flex gap-6">
-              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
+              <a href="https://x.com/thetwocentsclub" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-600 hover:text-gray-900">
                 X
               </a>
-              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
+              <a href="https://www.linkedin.com/company/two-cents-club/" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-600 hover:text-gray-900">
                 LinkedIn
               </a>
-              <a href="#" className="text-sm text-gray-600 hover:text-gray-900">
+              <a href="https://www.instagram.com/thetwocentsclub/" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-600 hover:text-gray-900">
                 Instagram
               </a>
             </div>
