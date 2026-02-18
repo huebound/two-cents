@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -28,10 +28,6 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  // hero alignment helpers
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const ctaRef = useRef<HTMLButtonElement | null>(null);
-  const [rowTop, setRowTop] = useState<number | null>(null);
 
   useEffect(() => {
     // Check if user is already authenticated
@@ -54,27 +50,6 @@ export default function Home() {
     };
     void checkAuth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Penny alignment logic removed; penny uses hero-nudge like other assets
-
-  // Position the baseline row just below the CTA
-  useEffect(() => {
-    const syncRow = () => {
-      const sec = sectionRef.current;
-      const cta = ctaRef.current;
-      if (!sec || !cta) return;
-      const s = sec.getBoundingClientRect();
-      const b = cta.getBoundingClientRect();
-      const top = b.bottom - s.top + 32; // 32px gap below CTA
-      setRowTop(top);
-    };
-    syncRow();
-    window.addEventListener("resize", syncRow);
-    try {
-      document?.fonts?.ready?.then?.(() => syncRow());
-    } catch (_) {}
-    return () => window.removeEventListener("resize", syncRow);
   }, []);
 
   const handleSendOtp = async () => {
@@ -206,13 +181,19 @@ export default function Home() {
         </header>
 
         {/* Hero Section */}
-        <section
-          ref={sectionRef}
-          className="relative isolate w-full overflow-hidden px-6 sm:py-24 md:px-12"
-        >
+        <section className="relative w-full">
+          {/* Mobile/tablet: hero image stacked above text */}
+          <img
+            src="/images/2C-Landing-Assets/hero-small.png"
+            alt=""
+            className="w-full h-auto lg:hidden mt-16 md:mt-24"
+          />
+          {/* Desktop: full-width background image; mobile: plain */}
+          <div className="lg:bg-[url('/images/2C-Landing-Assets/hero-full.png')] lg:bg-[length:100%_auto] lg:bg-no-repeat lg:bg-top lg:[min-height:clamp(560px,61vw,960px)]">
+          <div className="px-6 pt-8 pb-4 lg:pt-20 lg:px-12">
           <div className="mx-auto grid max-w-7xl grid-cols-12 items-start gap-x-8 gap-y-10">
             {/* Copy column */}
-            <div className="relative z-20 col-span-12 mt-[64px] md:mt-[80px] max-w-[780px] space-y-[32px] md:col-span-7 lg:h-[897px] mx-auto md:mx-0">
+            <div className="relative z-20 col-span-12 mt-0 lg:mt-[80px] lg:max-w-[640px] space-y-[32px] md:col-span-12 mx-auto md:mx-0">
               <h1
                 className="leading-[1.05] tracking-[-0.04em] text-left"
                 style={{
@@ -224,160 +205,30 @@ export default function Home() {
                 Your curiosity deserves 
                 <br/>a comeback.
               </h1>
-              <p className="text-xl tracking-[-0.01em] text-slate-700 text-left">
+              <div className="space-y-[8px]">
+              <p className="text-l tracking-[-0.01em] text-black text-left">
                 Remember when learning felt like play? When you explored things
                 just because they sparked joy?
               </p>
-              <p className="text-xl tracking-[-0.01em] text-slate-700 text-left">
+              <p className="text-l tracking-[-0.01em] text-black text-left">
                 Two Cents Club brings that feeling back. Join a community of
                 curious minds where passion meets growth—one who still believes
                 in wonder. Explore new skills, meet curious people, and invest
                 your fully in your curiosities.
               </p>
-              {/* <div className="flex justify-center md:justify-start">
+              </div>
+              <div className="flex justify-center md:justify-start">
                 <Button
                   onClick={() => setStep("email")}
-                  ref={ctaRef}
-                  className="rounded-full bg-blue-600 px-6 py-3 text-base font-medium text-white transition-colors hover:bg-blue-700"
+                  className="rounded-full bg-[#F6DE27] px-6 py-5 text-base font-medium text-black transition-colors hover:bg-[#DFC711]"
                 >
-                  Join the Waitlist
+                  Attend a Class
                 </Button>
-              </div> */}
-            </div>
-
-            {/* Artboard column (places images by % inside a stable box) */}
-            <div className="relative col-span-12 h-[520px] md:col-span-5 md:h-[520px] lg:h-[897px]">
-              {/* penny directly across from the headline */}
-              <img
-                src="/images/2C-Landing-Assets/penny.png"
-                alt=""
-                className="hero-nudge pointer-events-none absolute z-10 w-[120px] sm:w-[128px] lg:w-[152px]"
-                style={
-                  {
-                    top: "10%",
-                    left: "8%",
-                    filter: "drop-shadow(0 18px 32px rgba(0,0,0,0.18))",
-                    "--tx": "50px",
-                    "--ty": "0px",
-                    "--rot": "-10deg",
-                    "--sc": "1",
-                  } as React.CSSProperties
-                }
-              />
-              {/* star moved to the paper wrapper below so it follows the paper */}
-              {/* cd moved to the baseline row */}
-              {/* ruled paper stack moved to be pinned to the viewport right edge */}
-              {/* bowl moved to the baseline row */}
-              {/* compass moved to the baseline row */}
-              {/* paper clip accent moved to viewport left edge below */}
-            </div>
-          </div>
-
-          {/* Baseline row below the text */}
-          {rowTop !== null && (
-            <div
-              className="pointer-events-none absolute left-0 right-0 hidden sm:block"
-              style={{ top: rowTop }}
-            >
-              <div className="relative mx-auto max-w-7xl px-6 md:px-12">
-                <div className="flex h-[240px] items-end justify-between gap-6 lg:h-[280px]">
-                  {/* compass */}
-                  <img
-                    src="/images/2C-Landing-Assets/elizabeth-caricature.png"
-                    alt=""
-                    className="hero-nudge w-[120px] lg:w-[140px]"
-                    style={
-                      {
-                        filter: "drop-shadow(0 18px 30px rgba(0,0,0,0.18))",
-                        "--tx": "-20px",
-                        "--ty": "80px",
-                        "--rot": "6deg",
-                        "--sc": "1.5",
-                      } as React.CSSProperties
-                    }
-                  />
-                  {/* bowl */}
-                  <img
-                    src="/images/2C-Landing-Assets/bowl.png"
-                    alt=""
-                    className="hero-nudge w-[200px] lg:w-[240px]"
-                    style={
-                      {
-                        filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.14))",
-                        "--tx": "-30px",
-                        "--ty": "80px",
-                        "--rot": "0deg",
-                        "--sc": "1.25",
-                      } as React.CSSProperties
-                    }
-                  />
-                  {/* pen */}
-                  <img
-                    src="/images/2C-Landing-Assets/pen.png"
-                    alt=""
-                    className="hero-nudge w-[80px] lg:w-[96px]"
-                    style={
-                      {
-                        filter: "drop-shadow(0 16px 28px rgba(0,0,0,0.14))",
-                        "--tx": "-50px",
-                        "--ty": "-6px",
-                        "--rot": "-2deg",
-                        "--sc": "1.25",
-                      } as React.CSSProperties
-                    }
-                  />
-                  {/* cd */}
-                  <img
-                    src="/images/2C-Landing-Assets/cd.png"
-                    alt=""
-                    className="hero-nudge w-[180px] lg:w-[220px]"
-                    style={
-                      {
-                        filter: "drop-shadow(0 24px 36px rgba(0,0,0,0.16))",
-                        "--tx": "-120px",
-                        "--ty": "-180px",
-                        "--rot": "-6deg",
-                        "--sc": "1",
-                      } as React.CSSProperties
-                    }
-                  />
-                </div>
-                {/* paper clip pinned to the left screen edge moved to section level */}
               </div>
             </div>
-          )}
 
-          {/* Paper pinned to right screen edge with star overlay, wrapper keeps them together */}
-          <div
-            className="pointer-events-none absolute right-0 -mr-6 top-[16%] hidden sm:block lg:-mr-12"
-            style={{ width: "clamp(260px, 30vw, 520px)" }}
-          >
-            <div className="relative w-full">
-              <img
-                src="/images/2C-Landing-Assets/paper.png"
-                alt=""
-                className="w-full rotate-[3deg]"
-                style={{ filter: "drop-shadow(0 28px 42px rgba(0,0,0,0.18))" }}
-              />
-              <img
-                src="/images/2C-Landing-Assets/gold star.png"
-                alt=""
-                className="hero-nudge pointer-events-none absolute z-30"
-                style={
-                  {
-                    top: "8%",
-                    left: "70%",
-                    width: "clamp(40px, 5vw, 68px)",
-                    filter: "drop-shadow(0 14px 28px rgba(0,0,0,0.14))",
-                    transformOrigin: "center",
-                    "--tx": "-90px",
-                    "--ty": "70px",
-                    "--rot": "0deg",
-                    "--sc": "2",
-                  } as React.CSSProperties
-                }
-              />
-            </div>
+          </div>
+          </div>
           </div>
         </section>
 
@@ -475,33 +326,21 @@ export default function Home() {
         <section
           className="relative px-6 py-20 lg:px-12"
           style={{
-            backgroundImage: "url('/images/2C-Landing-Assets/paper-sheets.png')",
+            backgroundImage: "url('/images/2C-Landing-Assets/paper-with-doodles.png')",
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
           }}
         >
           <div className="relative mx-auto max-w-7xl">
-            {/* Header decoration */}
-            <div className="mb-6 flex items-center justify-center gap-4">
-              <div className="text-3xl">→</div>
-              <img
-                src="/images/2C-Landing-Assets/eyeball-doodle.png"
-                alt=""
-                className="w-10"
-              />
-            </div>
-
             {/* Ethan: far left, shifted up */}
-            <div className="mb-8 flex items-end gap-3 md:gap-5 max-w-xs md:max-w-sm lg:max-w-md">
+            <div className="mb-8 flex items-end gap-3 md:gap-5 max-w-sm md:max-w-xl lg:max-w-3xl">
               <img
                 src="/images/2C-Landing-Assets/ethan.png"
                 alt="Ethan"
-                className="flex-shrink-0 w-24 md:w-36 lg:w-44"
+                className="flex-shrink-0 w-24 md:w-36 lg:w-48"
               />
-              <div className="relative min-w-0 flex-1 -translate-y-6 md:-translate-y-14">
-                {/* Tail pointing left */}
-                <span className="absolute left-0 top-5 -translate-x-[5px] block h-3 w-3 rotate-45 border-b border-l bg-white/10" />
+              <div className="relative min-w-0 flex-1 -translate-y-10 md:-translate-y-12">
                 <div className="rounded-2xl border border-white/30 bg-white/10 px-4 py-3 shadow-xl backdrop-blur-xl md:px-5 md:py-4">
                   <p className="text-sm md:text-base">
                     &ldquo;I learned so much... truly grateful to Two Cents for the welcoming community &amp; wonderful learning.&rdquo;
@@ -531,21 +370,19 @@ export default function Home() {
             </div>
 
             {/* Mia: far right, shifted down */}
-            <div className="flex items-start gap-3 md:gap-5 max-w-xs md:max-w-sm lg:max-w-md ml-auto">
-              <div className="relative min-w-0 flex-1 translate-y-6 md:translate-y-14">
+            <div className="flex items-start gap-3 md:gap-5 max-w-sm md:max-w-xl lg:max-w-3xl ml-auto">
+              <div className="relative min-w-0 flex-1 translate-y-6 md:translate-y-12">
                 <div className="rounded-2xl border border-white/30 bg-white/10 px-4 py-3 shadow-xl backdrop-blur-xl md:px-5 md:py-4">
                   <p className="text-sm md:text-base">
                     &ldquo;I&rsquo;ve had a blast discovering all the classes Two Cents has to offer. From candlemaking to coffee, I&rsquo;ve begun to explore things I never thought I&rsquo;d have the chance to. Forever grateful!&rdquo;
                   </p>
                   <p className="mt-2 text-xs font-medium md:text-sm">— Mia</p>
                 </div>
-                {/* Tail pointing right */}
-                <span className="absolute right-0 top-5 translate-x-[5px] block h-3 w-3 rotate-45 border-r border-t bg-white/10" />
               </div>
               <img
                 src="/images/2C-Landing-Assets/mia-decorated.png"
                 alt="Mia"
-                className="flex-shrink-0 w-24 md:w-36 lg:w-44"
+                className="flex-shrink-0 w-24 md:w-36 lg:w-48"
               />
             </div>
 
@@ -554,11 +391,6 @@ export default function Home() {
               src="/images/2C-Landing-Assets/doodle1.png"
               alt=""
               className="absolute left-[2%] bottom-[5%] w-7 opacity-70"
-            />
-            <img
-              src="/images/2C-Landing-Assets/candle-doodle.png"
-              alt=""
-              className="absolute right-[2%] bottom-[5%] w-14 lg:w-16"
             />
           </div>
         </section>
@@ -604,8 +436,8 @@ export default function Home() {
 
         {/* Footer */}
         <footer className="bg-white px-6 py-8 md:px-12">
-          <div className="relative mx-auto flex max-w-7xl items-center justify-center">
-            <span className="absolute left-0 text-sm text-gray-600">
+          <div className="relative mx-auto flex max-w-7xl items-center justify-between md:justify-center">
+            <span className="text-sm text-gray-600 md:absolute md:left-0">
               © Two Cents Club
             </span>
             <div className="flex gap-6">
@@ -619,7 +451,7 @@ export default function Home() {
                 Instagram
               </a>
             </div>
-            <span className="absolute right-0 text-sm text-gray-600">
+            <span className="absolute right-0 text-sm text-gray-600 hidden md:block">
               Restoring child-like curiosity
             </span>
           </div>
