@@ -212,9 +212,8 @@ export default function Home() {
               </p>
               <p className="text-l tracking-[-0.01em] text-black text-left">
                 Two Cents Club brings that feeling back. Join a community of
-                curious minds where passion meets growth—one who still believes
-                in wonder. Explore new skills, meet curious people, and invest
-                your fully in your curiosities.
+                curious minds where passion meets growth—those who still believe
+                in wonder. Explore new skills, meet curious people, and invest fully in your curiosities.
               </p>
               </div>
               <div className="flex justify-center md:justify-start">
@@ -403,7 +402,7 @@ export default function Home() {
                 Ready to learn something new?
               </h2>
               <p className="mb-8 text-l lg:text-xl tracking-[-0.01em]">
-                Invest in your mind, feed your curiosity, and meet this kind of
+                Invest in your mind, feed your curiosity, and meet the kind of
                 people who challenge you to grow. Join Two Cents Club.
               </p>
               <Button
