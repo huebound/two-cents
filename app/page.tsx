@@ -464,16 +464,18 @@ export default function Home() {
     return (
       <div className="flex min-h-screen flex-col bg-white">
         {/* Header/Nav Bar - without Join button */}
-        <header className="absolute top-0 left-0 right-0 z-50 flex items-start justify-between px-6 py-4 md:px-12 md:py-8">
-          <div className="flex items-center gap-2 md:gap-3">
+        <header className="absolute top-0 left-0 right-0 z-50 px-6 py-4 md:px-12 md:py-8">
+          <div className="mx-auto flex w-full max-w-7xl items-start justify-between">
+          <button className="flex items-center gap-2 md:gap-3" onClick={() => setStep("landing")}>
             <img
-              src="/images/2C-Landing-Assets/eyeball.png"
+              src="/images/2C-Landing-Assets/googly-eye.png"
               alt="Two Cents Club"
               className="h-6 w-6 md:h-10 md:w-10"
             />
-            <span className="font-medium text-black text-base md:text-[24px]">
+            <span className="font-medium text-black text-base md:text-[24px]" style={{ fontFamily: 'TOMO Bossa' }}>
               Two Cents Club
             </span>
+          </button>
           </div>
         </header>
 
@@ -566,16 +568,18 @@ export default function Home() {
     return (
       <div className="flex min-h-screen flex-col bg-white">
         {/* Header/Nav Bar - without Join button */}
-        <header className="absolute top-0 left-0 right-0 z-50 flex items-start justify-between px-6 py-4 md:px-12 md:py-8">
-          <div className="flex items-center gap-2 md:gap-3">
+        <header className="absolute top-0 left-0 right-0 z-50 px-6 py-4 md:px-12 md:py-8">
+          <div className="mx-auto flex w-full max-w-7xl items-start justify-between">
+          <button className="flex items-center gap-2 md:gap-3" onClick={() => setStep("landing")}>
             <img
-              src="/images/2C-Landing-Assets/eyeball.png"
+              src="/images/2C-Landing-Assets/googly-eye.png"
               alt="Two Cents Club"
               className="h-6 w-6 md:h-10 md:w-10"
             />
-            <span className="font-medium text-black text-base md:text-[24px]">
+            <span className="font-medium text-black text-base md:text-[24px]" style={{ fontFamily: 'TOMO Bossa' }}>
               Two Cents Club
             </span>
+          </button>
           </div>
         </header>
 
@@ -642,16 +646,18 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
       {/* Header/Nav Bar - without Join button */}
-      <header className="absolute top-0 left-0 right-0 z-50 flex items-start justify-between px-6 py-4 md:px-12 md:py-8">
-        <div className="flex items-center gap-2 md:gap-3">
+      <header className="absolute top-0 left-0 right-0 z-50 px-6 py-4 md:px-12 md:py-8">
+        <div className="mx-auto flex w-full max-w-7xl items-start justify-between">
+        <button className="flex items-center gap-2 md:gap-3" onClick={() => setStep("landing")}>
           <img
-            src="/images/2C-Landing-Assets/eyeball.png"
+            src="/images/2C-Landing-Assets/googly-eye.png"
             alt="Two Cents Club"
             className="h-6 w-6 md:h-10 md:w-10"
           />
-          <span className="font-medium text-black text-base md:text-[24px]">
+          <span className="font-medium text-black text-base md:text-[24px]" style={{ fontFamily: 'TOMO Bossa' }}>
             Two Cents Club
           </span>
+        </button>
         </div>
       </header>
 
