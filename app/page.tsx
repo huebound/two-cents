@@ -362,11 +362,6 @@ export default function Home() {
                 Loved by learners
                 <br/> of all kinds.
               </h2>
-              <img
-                src="/images/2C-Landing-Assets/doodle2.png"
-                alt=""
-                className="mx-auto w-full max-w-xs"
-              />
             </div>
 
             {/* Mia: far right, shifted down */}
@@ -385,13 +380,6 @@ export default function Home() {
                 className="flex-shrink-0 w-24 md:w-36 lg:w-48"
               />
             </div>
-
-            {/* Decorative elements */}
-            <img
-              src="/images/2C-Landing-Assets/doodle1.png"
-              alt=""
-              className="absolute left-[2%] bottom-[5%] w-7 opacity-70"
-            />
           </div>
         </section>
 
