@@ -6,6 +6,12 @@ import "./globals.css";
 import Script from "next/script";
 import AnalyticsTracker from "@/components/analytics";
 
+const tomoBossa = localFont({
+  src: "./fonts/TOMO Bossa Black Rough.woff2",
+  variable: "--font-tomo-bossa",
+  display: "swap",
+});
+
 const neueMontreal = localFont({
   src: [
     { path: "./fonts/NeueMontreal-Light.otf", weight: "300", style: "normal" },
@@ -72,7 +78,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body
-        className={`${neueMontreal.variable} ${geistMono.variable} antialiased font-sans`}
+        className={`${tomoBossa.variable} ${neueMontreal.variable} ${geistMono.variable} antialiased font-sans`}
       >
         <Suspense fallback={null}>
           <AnalyticsTracker />

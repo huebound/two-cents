@@ -162,7 +162,7 @@ export default function Home() {
             />
             <span className="font-medium text-black text-base md:text-[24px]"
               style={{
-                fontFamily: 'TOMO Bossa',
+                fontFamily: 'var(--font-tomo-bossa)',
               }}
             >
               Two Cents Club
@@ -171,7 +171,7 @@ export default function Home() {
           <button
             className="cursor-pointer font-medium text-black hover:underline text-base md:text-[24px]"
             style={{
-                fontFamily: 'TOMO Bossa',
+                fontFamily: 'var(--font-tomo-bossa)',
             }}
             onClick={() => setStep("email")}
           >
@@ -197,7 +197,7 @@ export default function Home() {
               <h1
                 className="leading-[1.05] tracking-[-0.04em] text-left"
                 style={{
-                  fontFamily: 'TOMO Bossa',
+                  fontFamily: 'var(--font-tomo-bossa)',
                   letterSpacing: '-0.01em',
                   fontSize: "clamp(2.75rem, 6vw, 5rem)",
                 }}
@@ -241,7 +241,7 @@ export default function Home() {
                 <div className="min-w-0 flex-1">
                   <h2 className="mb-4 text-4xl font-bold lg:text-5xl leading-[1.3em]"
                     style={{
-                      fontFamily: 'TOMO Bossa',
+                      fontFamily: 'var(--font-tomo-bossa)',
                       letterSpacing: '0.03em',
                     }}
                   >
@@ -277,7 +277,7 @@ export default function Home() {
                 <div className="min-w-0 flex-1">
                   <h2 className="mb-4 text-4xl font-bold lg:text-5xl leading-[1.3em]"
                     style={{
-                      fontFamily: 'TOMO Bossa',
+                      fontFamily: 'var(--font-tomo-bossa)',
                       letterSpacing: '0.03em',
                     }}
                   >
@@ -298,7 +298,7 @@ export default function Home() {
                 <div className="min-w-0 flex-1">
                   <h2 className="mb-4 text-4xl font-bold lg:text-5xl leading-[1.3em]"
                     style={{
-                      fontFamily: 'TOMO Bossa',
+                      fontFamily: 'var(--font-tomo-bossa)',
                       letterSpacing: '0.03em',
                     }}
                   >
@@ -354,7 +354,7 @@ export default function Home() {
             <div className="mb-8 text-center mx-auto max-w-lg">
               <h2 className="mb-3 leading-[1.25em]"
                 style={{
-                  fontFamily: 'TOMO Bossa',
+                  fontFamily: 'var(--font-tomo-bossa)',
                   letterSpacing: '0.03em',
                   fontSize: "clamp(2.75rem, 6vw, 4rem)",
                 }}
@@ -407,7 +407,7 @@ export default function Home() {
             <div className="relative z-10 px-12 mx-auto max-w-2xl">
               <h2 className="mb-6 leading-[1.25em]"
                 style={{
-                  fontFamily: 'TOMO Bossa',
+                  fontFamily: 'var(--font-tomo-bossa)',
                   letterSpacing: '0.03em',
                   fontSize: "clamp(2.75rem, 6vw, 4rem)",
                 }}
@@ -472,7 +472,7 @@ export default function Home() {
               alt="Two Cents Club"
               className="h-6 w-6 md:h-10 md:w-10"
             />
-            <span className="font-medium text-black text-base md:text-[24px]" style={{ fontFamily: 'TOMO Bossa' }}>
+            <span className="font-medium text-black text-base md:text-[24px]" style={{ fontFamily: 'var(--font-tomo-bossa)' }}>
               Two Cents Club
             </span>
           </button>
@@ -576,7 +576,7 @@ export default function Home() {
               alt="Two Cents Club"
               className="h-6 w-6 md:h-10 md:w-10"
             />
-            <span className="font-medium text-black text-base md:text-[24px]" style={{ fontFamily: 'TOMO Bossa' }}>
+            <span className="font-medium text-black text-base md:text-[24px]" style={{ fontFamily: 'var(--font-tomo-bossa)' }}>
               Two Cents Club
             </span>
           </button>
@@ -654,7 +654,7 @@ export default function Home() {
             alt="Two Cents Club"
             className="h-6 w-6 md:h-10 md:w-10"
           />
-          <span className="font-medium text-black text-base md:text-[24px]" style={{ fontFamily: 'TOMO Bossa' }}>
+          <span className="font-medium text-black text-base md:text-[24px]" style={{ fontFamily: 'var(--font-tomo-bossa)' }}>
             Two Cents Club
           </span>
         </button>
