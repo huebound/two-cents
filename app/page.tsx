@@ -169,7 +169,7 @@ export default function Home() {
             </span>
           </div>
           <button
-            className="font-medium text-black hover:underline text-base md:text-[24px]"
+            className="cursor-pointer font-medium text-black hover:underline text-base md:text-[24px]"
             style={{
                 fontFamily: 'TOMO Bossa',
             }}
@@ -220,7 +220,7 @@ export default function Home() {
               <div className="flex justify-center md:justify-start">
                 <Button
                   onClick={() => setStep("email")}
-                  className="rounded-full bg-[#F6DE27] px-6 py-5 text-base font-medium text-black transition-colors hover:bg-[#DFC711]"
+                  className="rounded-full cursor-pointer bg-[#F6DE27] px-6 py-5 text-base font-medium text-black transition-colors hover:bg-[#DFC711]"
                 >
                   Attend a Class
                 </Button>
@@ -420,7 +420,7 @@ export default function Home() {
               </p>
               <Button
                 onClick={() => setStep("email")}
-                className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-base font-medium text-[#5A7A5E] hover:bg-gray-100"
+                className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-white px-6 py-5 text-base font-medium text-[#5A7A5E] hover:bg-gray-100"
               >
                 <img
                   src="/images/2C-Landing-Assets/handClapping.svg"
@@ -466,7 +466,7 @@ export default function Home() {
         {/* Header/Nav Bar - without Join button */}
         <header className="absolute top-0 left-0 right-0 z-50 px-6 py-4 md:px-12 md:py-8">
           <div className="mx-auto flex w-full max-w-7xl items-start justify-between">
-          <button className="flex items-center gap-2 md:gap-3" onClick={() => setStep("landing")}>
+          <button className="flex cursor-pointer items-center gap-2 md:gap-3" onClick={() => setStep("landing")}>
             <img
               src="/images/2C-Landing-Assets/googly-eye.png"
               alt="Two Cents Club"
@@ -570,7 +570,7 @@ export default function Home() {
         {/* Header/Nav Bar - without Join button */}
         <header className="absolute top-0 left-0 right-0 z-50 px-6 py-4 md:px-12 md:py-8">
           <div className="mx-auto flex w-full max-w-7xl items-start justify-between">
-          <button className="flex items-center gap-2 md:gap-3" onClick={() => setStep("landing")}>
+          <button className="flex cursor-pointer items-center gap-2 md:gap-3" onClick={() => setStep("landing")}>
             <img
               src="/images/2C-Landing-Assets/googly-eye.png"
               alt="Two Cents Club"
@@ -648,7 +648,7 @@ export default function Home() {
       {/* Header/Nav Bar - without Join button */}
       <header className="absolute top-0 left-0 right-0 z-50 px-6 py-4 md:px-12 md:py-8">
         <div className="mx-auto flex w-full max-w-7xl items-start justify-between">
-        <button className="flex items-center gap-2 md:gap-3" onClick={() => setStep("landing")}>
+        <button className="flex cursor-pointer items-center gap-2 md:gap-3" onClick={() => setStep("landing")}>
           <img
             src="/images/2C-Landing-Assets/googly-eye.png"
             alt="Two Cents Club"
