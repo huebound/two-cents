@@ -392,7 +392,7 @@ export default function Home() {
               alt=""
               className="absolute inset-0 h-full w-full object-cover"
             />
-            <div className="relative z-10 px-12 mx-auto max-w-2xl">
+            <div className="relative z-10 px-4 md:px-12 mx-auto max-w-2xl">
               <h2 className="mb-6 leading-[1.25em]"
                 style={{
                   fontFamily: 'var(--font-tomo-bossa)',
