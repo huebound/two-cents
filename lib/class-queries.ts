@@ -309,6 +309,26 @@ export async function getAttendedClasses(
   return (data ?? []).map((record) => withMeta(record as ClassRecord, userId));
 }
 
+export async function getPublicClasses(
+  supabase: Supabase,
+  limit = 20,
+): Promise<ClassWithMeta[]> {
+  const today = new Date().toISOString().split("T")[0];
+
+  const { data, error } = await supabase
+    .from("classes")
+    .select(CLASS_SELECT_BASE)
+    .gte("start_date", today)
+    .order("start_date", { ascending: true })
+    .limit(limit);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return (data ?? []).map((record) => withMeta(record as ClassRecord, null));
+}
+
 export async function getTeachingClasses(
   supabase: Supabase,
   userId: string,
