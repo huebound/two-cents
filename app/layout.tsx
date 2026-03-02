@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import "./globals.css";
 import Script from "next/script";
 import AnalyticsTracker from "@/components/analytics";
+import FloatingBoxButton from "@/components/floating-box-button";
 
 const tomoBossa = localFont({
   src: "./fonts/TOMO Bossa Black Rough.woff2",
@@ -84,6 +85,7 @@ export default function RootLayout({
           <AnalyticsTracker />
         </Suspense>
         {children}
+        <FloatingBoxButton />
       </body>
     </html>
   );

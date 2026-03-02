@@ -111,85 +111,45 @@ export default async function PublicClassPage({
 
         {/* ── Title block ─────────────────────────────────── */}
         <div className="mx-auto max-w-7xl px-6 md:px-12">
-          <div className="py-8 lg:grid lg:grid-cols-3 lg:gap-16">
-            {/* Left: title + meta */}
-            <div className="lg:col-span-2 space-y-5">
-              <Link
-                href="/browse"
-                className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-700 transition-colors"
+          <div className="py-8 space-y-5">
+            <Link
+              href="/browse"
+              className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-700 transition-colors"
+            >
+              ← All classes
+            </Link>
+
+            <div className="space-y-3">
+              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
+                {classData.level} &bull; {classData.location_tag}
+              </p>
+              <h1
+                className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl"
+                style={TOMO}
               >
-                ← All classes
-              </Link>
-
-              <div className="space-y-3">
-                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-                  {classData.level} &bull; {classData.location_tag}
-                </p>
-                <h1
-                  className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl"
-                  style={TOMO}
-                >
-                  {classData.title}
-                </h1>
-              </div>
-
-              {/* Quick tags */}
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="rounded-full border border-gray-200 px-3 py-1 text-sm text-gray-600">
-                  {weeksLabel}
-                </span>
-                <span
-                  className="rounded-full px-3 py-1 text-sm font-semibold"
-                  style={{
-                    backgroundColor: `${accentColor}15`,
-                    color: accentColor,
-                  }}
-                >
-                  {spotsLabel}
-                </span>
-                {classData.price && (
-                  <span className="rounded-full border border-gray-200 px-3 py-1 text-sm font-semibold text-gray-900">
-                    {classData.price}
-                  </span>
-                )}
-              </div>
+                {classData.title}
+              </h1>
             </div>
 
-            {/* Right: register card (desktop only at this position) */}
-            <div className="hidden lg:block lg:col-span-1">
-              <div
-                className="rounded-2xl p-6 space-y-4"
-                style={{ backgroundColor: `${accentColor}08`, border: `1px solid ${accentColor}20` }}
+            {/* Quick tags */}
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full border border-gray-200 px-3 py-1 text-sm text-gray-600">
+                {weeksLabel}
+              </span>
+              <span
+                className="rounded-full px-3 py-1 text-sm font-semibold"
+                style={{
+                  backgroundColor: `${accentColor}15`,
+                  color: accentColor,
+                }}
               >
-                <dl className="space-y-3 text-sm">
-                  <div className="flex justify-between gap-3">
-                    <dt className="text-gray-500 shrink-0">Schedule</dt>
-                    <dd className="font-medium text-gray-900 text-right">{classData.meeting_days}</dd>
-                  </div>
-                  <div className="flex justify-between gap-3">
-                    <dt className="text-gray-500 shrink-0">Dates</dt>
-                    <dd className="font-medium text-gray-900 text-right">{dateRange}</dd>
-                  </div>
-                  <div className="flex justify-between gap-3">
-                    <dt className="text-gray-500 shrink-0">Time</dt>
-                    <dd className="font-medium text-gray-900 text-right">{timeRange}</dd>
-                  </div>
-                  <div className="flex justify-between gap-3">
-                    <dt className="text-gray-500 shrink-0">Location</dt>
-                    <dd className="font-medium text-gray-900 text-right">{classData.location_tag}</dd>
-                  </div>
-                  {classData.price && (
-                    <div className="flex justify-between gap-3 pt-1 border-t border-gray-200">
-                      <dt className="text-gray-500 shrink-0">Price</dt>
-                      <dd className="font-bold text-gray-900 text-right">{classData.price}</dd>
-                    </div>
-                  )}
-                </dl>
-                <RegisterCTA classTitle={classData.title} isFull={isFull} />
-                <p className="text-center text-xs text-gray-400">
-                  You&apos;ll need a free account to register.
-                </p>
-              </div>
+                {spotsLabel}
+              </span>
+              {classData.price && (
+                <span className="rounded-full border border-gray-200 px-3 py-1 text-sm font-semibold text-gray-900">
+                  {classData.price}
+                </span>
+              )}
             </div>
           </div>
 
@@ -226,9 +186,13 @@ export default async function PublicClassPage({
                   <h2 className="mb-4 text-xl font-semibold text-gray-900">
                     About this class
                   </h2>
-                  <p className="text-base leading-[1.8] text-gray-600 whitespace-pre-line">
-                    {classData.description}
-                  </p>
+                  <div className="space-y-4">
+                    {classData.description.split("\n\n").map((para, i) => (
+                      <p key={i} className="text-base leading-[1.8] text-gray-600">
+                        {para}
+                      </p>
+                    ))}
+                  </div>
                 </section>
               )}
 
@@ -265,11 +229,21 @@ export default async function PublicClassPage({
 
             {/* Right: sticky register card (desktop) */}
             <div className="hidden lg:block lg:col-span-1">
-              <div className="sticky top-24 space-y-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-                <p className="text-lg font-bold text-gray-900 leading-snug">{classData.title}</p>
+              <div className="sticky top-24 space-y-3 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <span
+                    className="text-sm font-semibold"
+                    style={{ color: accentColor }}
+                  >
+                    {spotsLabel}
+                  </span>
+                  {classData.price && (
+                    <span className="text-sm font-semibold text-gray-900">{classData.price}</span>
+                  )}
+                </div>
                 <RegisterCTA classTitle={classData.title} isFull={isFull} />
                 <p className="text-center text-xs text-gray-400">
-                  You&apos;ll need a free account to register.
+                  Free account required to register.
                 </p>
               </div>
             </div>
