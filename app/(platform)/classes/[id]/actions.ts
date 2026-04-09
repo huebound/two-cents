@@ -30,7 +30,7 @@ export async function registerForClassAction(
     return { success: false, error: "You are already registered for this class." };
   }
 
-  if (classData.spotsLeft <= 0) {
+  if (classData.spotsLeft !== null && classData.spotsLeft <= 0) {
     return { success: false, error: "This class is already full." };
   }
 
@@ -49,8 +49,7 @@ export async function registerForClassAction(
     return { success: false, error: error.message };
   }
 
-  revalidatePath("/home");
-  revalidatePath(`/classes/${classId}`);
+  revalidatePath(`/c/${classId}`);
 
   return { success: true };
 }

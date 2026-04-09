@@ -1,33 +1,20 @@
-import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-import { getPublicClasses } from "@/lib/class-queries";
-import { MOCK_CLASSES, type ClassWithPrice } from "@/lib/mock-classes";
 import { HomepageLanding } from "@/components/homepage-landing";
+import { getUserFirstName } from "@/lib/user-queries";
+import { getClassById } from "@/lib/class-queries";
+import { FEATURED_EVENT } from "@/lib/featured-event";
 
 export default async function Home() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+  const firstName = user ? await getUserFirstName(supabase, user) : undefined;
+  const featuredEvent = await getClassById(supabase, FEATURED_EVENT.id).catch(() => null);
 
-  if (user) {
-    if (user.user_metadata?.onboarded) {
-      redirect("/home");
-    } else {
-      redirect("/onboarding");
-    }
-  }
-
-  let classes: ClassWithPrice[] = [];
-  try {
-    classes = await getPublicClasses(supabase) as ClassWithPrice[];
-  } catch {
-    // swallow DB errors — fall through to mock data
-  }
-
-  if (classes.length === 0) {
-    classes = MOCK_CLASSES;
-  }
-
-  return <HomepageLanding classes={classes} />;
+  return (
+    <HomepageLanding
+      isLoggedIn={!!user}
+      firstName={firstName}
+      featuredEvent={featuredEvent}
+    />
+  );
 }

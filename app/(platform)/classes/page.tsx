@@ -13,6 +13,10 @@ function toIsoDateString(date: Date) {
   return date.toISOString().split("T")[0];
 }
 
+function todayIso() {
+  return toIsoDateString(new Date());
+}
+
 export default async function ClassesPage() {
   const supabase = await createClient();
   const {
@@ -47,14 +51,12 @@ export default async function ClassesPage() {
         sessionId: `${entry.classItem.id}-${sessionDate.toISOString()}`,
         classId: entry.classItem.id,
         title: entry.classItem.title,
-        level: entry.classItem.level,
-        locationTag: entry.classItem.location_tag,
-        meetingDays: entry.classItem.meeting_days,
+        meetingDays: entry.classItem.meeting_days ?? "",
         startTime: entry.classItem.start_time,
         endTime: entry.classItem.end_time,
         sessionIndex: startOffset + index + 1,
         totalOccurrences: entry.progress.totalOccurrences,
-        spotsLeft: entry.classItem.spotsLeft,
+        spotsLeft: entry.classItem.spotsLeft ?? 0,
         sessionDate: toIsoDateString(sessionDate),
       }));
     });
@@ -72,28 +74,23 @@ export default async function ClassesPage() {
     };
   });
 
-  const todayIso = new Date().toISOString().split("T")[0];
+  const today = todayIso();
   const teachingActive = teachingClasses
-    .filter((classItem) => classItem.end_date >= todayIso)
+    .filter((classItem) => classItem.end_date >= today)
     .map((classItem) => ({
       id: classItem.id,
       title: classItem.title,
       startDate: classItem.start_date,
       endDate: classItem.end_date,
-      level: classItem.level,
-      locationTag: classItem.location_tag,
-      scheduleSummary: classItem.schedule_summary,
-      meetingDays: classItem.meeting_days,
-      locationDetails: classItem.location_details,
-      requirements: classItem.requirements ?? "",
+      meetingDays: classItem.meeting_days ?? "",
       description: classItem.description ?? "",
       hostBlurb: classItem.host_blurb ?? "",
-      spotsLeft: classItem.spotsLeft,
-      totalSpots: classItem.total_spots,
+      spotsLeft: classItem.spotsLeft ?? 0,
+      totalSpots: classItem.total_spots ?? 0,
     }));
 
   const teachingPast = teachingClasses
-    .filter((classItem) => classItem.end_date < todayIso)
+    .filter((classItem) => classItem.end_date < today)
     .map((classItem) => ({
       id: classItem.id,
       title: classItem.title,

@@ -1,11 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata } from "next/dist/lib/metadata/types/metadata-interface";
 import localFont from "next/font/local";
 import { Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
 import Script from "next/script";
 import AnalyticsTracker from "@/components/analytics";
-import FloatingBoxButton from "@/components/floating-box-button";
+import { Toaster } from "@/components/ui/sonner";
 
 const tomoBossa = localFont({
   src: "./fonts/TOMO Bossa Black Rough.woff2",
@@ -85,7 +85,7 @@ export default function RootLayout({
           <AnalyticsTracker />
         </Suspense>
         {children}
-        <FloatingBoxButton />
+        <Toaster />
       </body>
     </html>
   );

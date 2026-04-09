@@ -1,103 +1,45 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useCallback, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { AuthDialog } from "@/components/auth-dialog";
-import { PublicClassCard } from "@/components/public-class-card";
-import type { ClassWithPrice } from "@/lib/mock-classes";
-
-const TOMO = { fontFamily: "var(--font-tomo-bossa)" };
+import FloatingBoxButton from "@/components/floating-box-button";
+import { SiteNavbar } from "@/components/app-navbar";
+import { FEATURED_EVENT } from "@/lib/featured-event";
+import { SiteFooter } from "@/components/site-footer";
+import type { ClassWithMeta } from "@/lib/class-queries";
+import { formatDateRange, formatTimeRange } from "@/lib/format";
+import { TOMO } from "@/lib/constants";
 
 interface HomepageLandingProps {
-  classes: ClassWithPrice[];
+  isLoggedIn?: boolean;
+  firstName?: string;
+  featuredEvent?: ClassWithMeta | null;
 }
 
-export function HomepageLanding({ classes }: HomepageLandingProps) {
+export function HomepageLanding({ isLoggedIn = false, firstName, featuredEvent }: HomepageLandingProps) {
   const [authOpen, setAuthOpen] = useState(false);
   const openAuth = () => setAuthOpen(true);
 
-  // Show up to 6 in the carousel (3 visible at a time on desktop)
-  const featuredClasses = classes.slice(0, 6);
-  const hasClasses = classes.length > 0;
-
-  // Carousel state
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const [canPrev, setCanPrev] = useState(false);
-  const [canNext, setCanNext] = useState(false);
-
-  const updateArrows = useCallback(() => {
-    const el = carouselRef.current;
-    if (!el) return;
-    setCanPrev(el.scrollLeft > 1);
-    setCanNext(el.scrollLeft < el.scrollWidth - el.clientWidth - 1);
-  }, []);
-
-  useEffect(() => {
-    // Set initial arrow state once layout settles
-    const id = setTimeout(updateArrows, 50);
-    return () => clearTimeout(id);
-  }, [updateArrows, featuredClasses.length]);
-
-  const scrollCarousel = (dir: "prev" | "next") => {
-    const el = carouselRef.current;
-    if (!el) return;
-    el.scrollBy({
-      left: dir === "next" ? el.clientWidth : -el.clientWidth,
-      behavior: "smooth",
-    });
-  };
+  const dateLabel = featuredEvent ? formatDateRange(featuredEvent.start_date, featuredEvent.end_date) : null;
+  const timeLabel = featuredEvent ? formatTimeRange(featuredEvent.start_time, featuredEvent.end_time) : null;
 
   return (
     <div className="flex min-h-screen flex-col bg-white">
       <AuthDialog open={authOpen} onOpenChange={setAuthOpen} />
-
-      {/* ── Header ─────────────────────────────────────────── */}
-      <header className="absolute top-0 left-0 right-0 z-50 px-6 py-4 md:px-12 md:py-8">
-        <div className="mx-auto flex w-full max-w-7xl items-start justify-between">
-          <div className="flex items-center gap-2 md:gap-3">
-            <img
-              src="/images/2C-Landing-Assets/googly-eye.png"
-              alt="Two Cents Club"
-              className="h-6 w-6 md:h-10 md:w-10"
-            />
-            <span
-              className="font-medium text-black text-base md:text-[24px]"
-              style={TOMO}
-            >
-              Two Cents Club
-            </span>
-          </div>
-          <nav className="flex items-center gap-5 md:gap-8">
-            <Link
-              href="/browse"
-              className="font-medium text-black hover:underline text-sm md:text-[18px]"
-              style={TOMO}
-            >
-              Classes
-            </Link>
-            <button
-              className="cursor-pointer font-medium text-black hover:underline text-sm md:text-[18px]"
-              style={TOMO}
-              onClick={openAuth}
-            >
-              Join the Club
-            </button>
-          </nav>
-        </div>
-      </header>
+      <SiteNavbar isLoggedIn={isLoggedIn} firstName={firstName} />
 
       {/* ── Hero ───────────────────────────────────────────── */}
       <section className="relative w-full">
         <img
           src="/images/2C-Landing-Assets/hero-small.png"
           alt=""
-          className="w-full h-auto lg:hidden mt-16 md:mt-24"
+          className="w-full h-auto lg:hidden"
         />
-        <div className="lg:bg-[url('/images/2C-Landing-Assets/hero-full.png')] lg:bg-[length:100%_auto] lg:bg-no-repeat lg:bg-top lg:[min-height:clamp(560px,61vw,960px)]">
-          <div className="px-6 pt-8 pb-4 lg:pt-20 lg:px-12">
-            <div className="mx-auto grid max-w-7xl grid-cols-12 items-start gap-x-8 gap-y-10">
+        <div className="lg:bg-[url('/images/2C-Landing-Assets/hero-format.png')] lg:bg-[length:100%_auto] lg:bg-no-repeat lg:bg-top lg:[min-height:clamp(560px,61vw,960px)]">
+          <div className="px-6 pt-8 pb-4 lg:pt-16 lg:px-12">
+            <div className="mx-auto grid max-w-6xl grid-cols-12 items-start gap-x-8 gap-y-10">
               <div className="relative z-20 col-span-12 mt-0 lg:mt-[80px] lg:max-w-[640px] space-y-[32px] md:col-span-12 mx-auto md:mx-0">
                 <h1
                   className="leading-[1.05] tracking-[-0.04em] text-left"
@@ -122,98 +64,73 @@ export function HomepageLanding({ classes }: HomepageLandingProps) {
                     and invest fully in your curiosities.
                   </p>
                 </div>
-                <div className="flex justify-center md:justify-start">
-                  <Button
-                    onClick={openAuth}
-                    className="rounded-full cursor-pointer bg-[#F6DE27] px-6 py-5 text-base font-medium text-black transition-colors hover:bg-[#DFC711]"
-                  >
-                    Attend a Class
-                  </Button>
-                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Featured Classes carousel ───────────────────────── */}
-      {hasClasses && (
-        <section className="py-16 px-6 md:px-12">
-          <div className="mx-auto max-w-7xl">
-            {/* Section header */}
-            <div className="mb-8 flex items-end justify-between">
-              <div className="space-y-1">
-                <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-                  Happening now
-                </p>
-                <h2
-                  className="text-4xl font-bold leading-tight lg:text-5xl"
-                  style={{ ...TOMO, letterSpacing: "0.02em" }}
-                >
-                  Classes this season.
-                </h2>
-              </div>
+      {/* ── Featured Event ─────────────────────────────────── */}
+      <section className="px-6 py-16 md:px-12 bg-[#FFFEED]">
+        <div className="mx-auto max-w-6xl">
+          <p className="text-xs font-medium uppercase tracking-widest text-gray-400 mb-6">
+            Upcoming Event
+          </p>
 
-              {/* Arrow controls + View all */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => scrollCarousel("prev")}
-                  disabled={!canPrev}
-                  aria-label="Previous classes"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition hover:bg-gray-50 disabled:opacity-25 disabled:cursor-not-allowed"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => scrollCarousel("next")}
-                  disabled={!canNext}
-                  aria-label="Next classes"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition hover:bg-gray-50 disabled:opacity-25 disabled:cursor-not-allowed"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </button>
-                <Link
-                  href="/browse"
-                  className="ml-2 hidden text-sm font-medium text-gray-400 hover:text-black transition-colors sm:block"
-                >
-                  View all →
-                </Link>
-              </div>
+          <div className="bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-sm lg:flex">
+            {/* Image */}
+            <div className="lg:w-[55%] shrink-0">
+              <img
+                src={featuredEvent?.image_url ?? ""}
+                alt={featuredEvent?.title ?? ""}
+                className="w-full h-64 lg:h-full object-cover"
+              />
             </div>
 
-            {/* Scrollable track — 3 cards visible at once on desktop */}
-            <div
-              ref={carouselRef}
-              onScroll={updateArrows}
-              className="flex gap-5 overflow-x-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:hidden snap-x snap-mandatory"
-            >
-              {featuredClasses.map((cls, i) => (
-                <PublicClassCard
-                  key={cls.id}
-                  id={cls.id}
-                  title={cls.title}
-                  imageUrl={cls.image_url}
-                  startDate={cls.start_date}
-                  startTime={cls.start_time}
-                  endTime={cls.end_time}
-                  meetingDays={cls.meeting_days}
-                  level={cls.level}
-                  locationTag={cls.location_tag}
-                  spotsLeft={cls.spotsLeft}
-                  price={cls.price}
-                  accentIndex={i}
-                  featured
-                  className="snap-start shrink-0 min-w-[calc(100%-20px)] sm:min-w-[calc(50%-10px)] lg:min-w-[calc(33.333%-14px)]"
-                />
-              ))}
+            {/* Details */}
+            <div className="p-8 lg:p-10 flex flex-col justify-center gap-6">
+              <div className="space-y-3">
+                <h2
+                  className="text-3xl lg:text-4xl leading-tight text-gray-900"
+                  style={TOMO}
+                >
+                  {featuredEvent?.title}
+                </h2>
+
+                <div className="flex flex-col gap-1.5 text-sm text-black">
+                  {(dateLabel || timeLabel) && (
+                    <div className="flex items-center gap-2">
+                      <span>📅</span>
+                      <span>{[dateLabel, timeLabel].filter(Boolean).join(" · ")}</span>
+                    </div>
+                  )}
+                  {featuredEvent?.location_details && (
+                    <div className="flex items-start gap-2">
+                      <span>📍</span>
+                      <span>{featuredEvent.location_details}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <p className="text-sm leading-relaxed text-gray-600 line-clamp-5 whitespace-pre-line">
+                {featuredEvent?.description}
+              </p>
+
+              <Link
+                href={FEATURED_EVENT.path}
+                className="inline-flex w-fit items-center gap-2 rounded-full bg-[#C94256] px-6 py-3 text-sm font-medium text-white transition-all hover:bg-[#a33045]"
+              >
+                View event
+              </Link>
             </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* ── Feature Sections ────────────────────────────────── */}
       <div className="bg-white px-6 py-12 md:px-12">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6">
           {/* Discover */}
           <section className="overflow-hidden rounded-[16px] bg-[#C94256] px-12 py-12 text-white md:py-20 lg:px-12">
             <div className="mx-auto flex max-w-6xl flex-col items-center gap-8 md:flex-row md:gap-12">
@@ -306,7 +223,7 @@ export function HomepageLanding({ classes }: HomepageLandingProps) {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="relative mx-auto max-w-7xl">
+        <div className="relative mx-auto max-w-6xl">
           <div className="mb-8 flex items-end gap-3 md:gap-5 max-w-sm md:max-w-xl lg:max-w-3xl">
             <img
               src="/images/2C-Landing-Assets/ethan.png"
@@ -361,7 +278,7 @@ export function HomepageLanding({ classes }: HomepageLandingProps) {
 
       {/* ── Final CTA ───────────────────────────────────────── */}
       <div className="bg-white px-6 py-12 md:px-12">
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-6xl">
           <section className="relative overflow-hidden rounded-[16px] px-6 py-32 text-center text-white lg:px-12">
             <img
               src="/images/2C-Landing-Assets/bg-gathering.png"
@@ -392,7 +309,7 @@ export function HomepageLanding({ classes }: HomepageLandingProps) {
                   alt=""
                   className="h-5 w-5"
                 />
-                Join the Waitlist
+                Join the Club
               </Button>
             </div>
           </section>
@@ -400,42 +317,8 @@ export function HomepageLanding({ classes }: HomepageLandingProps) {
       </div>
 
       {/* ── Footer ──────────────────────────────────────────── */}
-      <footer className="bg-white px-6 py-8 md:px-12">
-        <div className="relative mx-auto flex max-w-7xl items-center justify-between md:justify-center">
-          <span className="text-sm text-gray-600 md:absolute md:left-0">
-            © Two Cents Club
-          </span>
-          <div className="flex gap-6">
-            <a
-              href="https://x.com/thetwocentsclub"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              X
-            </a>
-            <a
-              href="https://www.linkedin.com/company/two-cents-club/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              LinkedIn
-            </a>
-            <a
-              href="https://www.instagram.com/thetwocentsclub/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              Instagram
-            </a>
-          </div>
-          <span className="absolute right-0 text-sm text-gray-600 hidden md:block">
-            Restoring child-like curiosity
-          </span>
-        </div>
-      </footer>
+      <SiteFooter showTagline={false} />
+      <FloatingBoxButton />
     </div>
   );
 }

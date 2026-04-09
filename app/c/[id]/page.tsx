@@ -2,13 +2,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { getClassById } from "@/lib/class-queries";
-import { getMockClassById, type ClassWithPrice } from "@/lib/mock-classes";
+import type { ClassWithPrice } from "@/lib/class-queries";
 import { formatDateRange, formatDuration, formatTimeRange } from "@/lib/format";
-import { RegisterCTA } from "./register-cta";
+import { RegisterCTA } from "@/components/register-cta";
+import { SiteNavbar } from "@/components/app-navbar";
+import { SiteFooter } from "@/components/site-footer";
+import { getUserFirstName } from "@/lib/user-queries";
+import { TOMO } from "@/lib/constants";
 
 const ACCENT_COLORS = ["#C94256", "#4A90E2", "#4A9B8E", "#D97706"];
-
-const TOMO = { fontFamily: "var(--font-tomo-bossa)" };
 
 function accentForId(id: string) {
   const hash = Math.abs(
@@ -25,170 +27,152 @@ export default async function PublicClassPage({
   const { id } = await params;
 
   let classData: ClassWithPrice | null = null;
+  let isLoggedIn = false;
+  let firstName: string | undefined;
   try {
     const supabase = await createClient();
-    classData = (await getClassById(supabase, id)) as ClassWithPrice | null;
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    isLoggedIn = !!user;
+    firstName = user ? await getUserFirstName(supabase, user) : undefined;
+    classData = (await getClassById(supabase, id, user?.id)) as ClassWithPrice | null;
   } catch {
-    // fall through to mock
+    // fall through to notFound
   }
 
-  if (!classData) {
-    const mock = getMockClassById(id);
-    if (!mock) notFound();
-    classData = mock;
-  }
+  if (!classData) notFound();
 
   const accentColor = accentForId(id);
-  const dateRange = formatDateRange(classData.start_date, classData.end_date);
-  const timeRange = formatTimeRange(classData.start_time, classData.end_time);
-  const duration = formatDuration(classData.start_time, classData.end_time);
-  const weeksLabel = `${classData.weeks} ${classData.weeks === 1 ? "week" : "weeks"}`;
-  const spotsLeft = classData.spotsLeft;
+  const dateRange = formatDateRange(classData!.start_date, classData!.end_date);
+  const timeRange = formatTimeRange(classData!.start_time, classData!.end_time);
+  const duration = formatDuration(classData!.start_time, classData!.end_time);
+  const weeksLabel = `${classData!.weeks} ${classData!.weeks === 1 ? "week" : "weeks"}`;
+  const spotsLeft = classData!.spotsLeft;
   const isFull = spotsLeft === 0;
   const spotsLabel = isFull
     ? "Fully booked"
-    : `${spotsLeft} spot${spotsLeft === 1 ? "" : "s"} left`;
-  const requirements = classData.requirements ?? "Nothing special required.";
+    : spotsLeft != null
+      ? `${spotsLeft} spot${spotsLeft === 1 ? "" : "s"} left`
+      : "Open enrollment";
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
-      {/* ── Header ──────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 px-6 py-4 md:px-12 md:py-6 bg-white border-b border-gray-100">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 md:gap-3">
-            <img
-              src="/images/2C-Landing-Assets/googly-eye.png"
-              alt="Two Cents Club"
-              className="h-6 w-6 md:h-9 md:w-9"
-            />
-            <span
-              className="font-medium text-black text-base md:text-[22px]"
-              style={TOMO}
-            >
-              Two Cents Club
-            </span>
-          </Link>
-          <nav className="flex items-center gap-5 md:gap-8">
-            <Link
-              href="/browse"
-              className="font-medium text-black hover:underline text-sm md:text-[18px]"
-              style={TOMO}
-            >
-              Classes
-            </Link>
-            <Link
-              href="/"
-              className="font-medium text-black hover:underline text-sm md:text-[18px]"
-              style={TOMO}
-            >
-              Join the Club
-            </Link>
-          </nav>
-        </div>
-      </header>
+    <div className="flex min-h-screen flex-col">
+      <SiteNavbar isLoggedIn={isLoggedIn} firstName={firstName} />
 
       <main>
-        {/* ── Hero image — full bleed ──────────────────────── */}
+        {/* ── Hero ───────────────────────────────────────────── */}
         <div className="relative">
-          {classData.image_url ? (
+          {classData!.image_url ? (
             <img
-              src={classData.image_url}
-              alt={classData.title}
-              className="h-64 w-full object-cover md:h-[480px]"
+              src={classData!.image_url}
+              alt={classData!.title}
+              className="h-64 w-full object-cover md:h-[440px]"
             />
           ) : (
             <div
-              className="h-48 w-full md:h-80"
-              style={{ backgroundColor: `${accentColor}22` }}
+              className="h-64 w-full md:h-[440px]"
+              style={{ backgroundColor: `${accentColor}18` }}
             />
           )}
-          {/* Accent bar at bottom of image */}
+
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+
+          {/* Accent bar */}
           <div
-            className="absolute bottom-0 left-0 right-0 h-[3px]"
+            className="absolute bottom-0 left-0 right-0 h-1"
             style={{ backgroundColor: accentColor }}
           />
-        </div>
 
-        {/* ── Title block ─────────────────────────────────── */}
-        <div className="mx-auto max-w-7xl px-6 md:px-12">
-          <div className="py-8 space-y-5">
-            <Link
-              href="/browse"
-              className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-700 transition-colors"
-            >
-              ← All classes
-            </Link>
-
-            <div className="space-y-3">
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-                {classData.level} &bull; {classData.location_tag}
-              </p>
+          {/* Title over image */}
+          <div className="absolute bottom-0 left-0 right-0 px-6 pb-8 md:pb-10">
+            <div className="mx-auto max-w-6xl">
+              <Link
+                href="/"
+                className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/70 hover:bg-white/20 hover:text-white transition-colors backdrop-blur-sm"
+              >
+                ←
+              </Link>
               <h1
-                className="text-4xl font-bold leading-tight md:text-5xl lg:text-6xl"
+                className="text-4xl font-bold leading-tight text-white md:text-5xl"
                 style={TOMO}
               >
-                {classData.title}
+                {classData!.title}
               </h1>
             </div>
+          </div>
+        </div>
 
-            {/* Quick tags */}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-gray-200 px-3 py-1 text-sm text-gray-600">
-                {weeksLabel}
+        <div className="mx-auto max-w-6xl px-6">
+          {/* ── Tags row ───────────────────────────────────────── */}
+          <div className="flex flex-wrap items-center gap-2 py-5">
+            <span className="rounded-full border border-gray-200 bg-white px-3 py-1 text-sm text-gray-600">
+              {weeksLabel}
+            </span>
+            {classData!.meeting_days && (
+              <span className="rounded-full border border-gray-200 bg-white px-3 py-1 text-sm text-gray-600">
+                {classData!.meeting_days}
               </span>
-              <span
-                className="rounded-full px-3 py-1 text-sm font-semibold"
-                style={{
-                  backgroundColor: `${accentColor}15`,
-                  color: accentColor,
-                }}
-              >
-                {spotsLabel}
+            )}
+            {classData!.price && (
+              <span className="rounded-full border border-gray-200 bg-white px-3 py-1 text-sm font-semibold text-gray-900">
+                {classData!.price}
               </span>
-              {classData.price && (
-                <span className="rounded-full border border-gray-200 px-3 py-1 text-sm font-semibold text-gray-900">
-                  {classData.price}
-                </span>
-              )}
-            </div>
+            )}
           </div>
 
-          {/* ── Schedule strip (visible on all sizes) ─────── */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-gray-100 rounded-2xl border border-gray-100 mb-12">
-            <div className="px-5 py-4">
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Frequency</p>
-              <p className="font-semibold text-gray-900 leading-snug">{classData.meeting_days}</p>
-              <p className="text-sm text-gray-500 mt-0.5">{classData.schedule_summary}</p>
-            </div>
-            <div className="px-5 py-4">
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Time</p>
-              <p className="font-semibold text-gray-900 leading-snug">{timeRange}</p>
-              <p className="text-sm text-gray-500 mt-0.5">{duration}</p>
-            </div>
-            <div className="px-5 py-4">
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Dates</p>
-              <p className="font-semibold text-gray-900 leading-snug">{dateRange}</p>
-              <p className="text-sm text-gray-500 mt-0.5">{weeksLabel}</p>
-            </div>
-            <div className="px-5 py-4">
-              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Location</p>
-              <p className="font-semibold text-gray-900 leading-snug">{classData.location_tag}</p>
-              <p className="text-sm text-gray-500 mt-0.5 line-clamp-1">{classData.location_details}</p>
-            </div>
-          </div>
+          {/* ── Two-column body ────────────────────────────────── */}
+          <div className="pb-24 lg:grid lg:grid-cols-3 lg:gap-12">
+            {/* Left: main content */}
+            <div className="space-y-10 lg:col-span-2">
 
-          {/* ── Body content ────────────────────────────────── */}
-          <div className="pb-20 lg:grid lg:grid-cols-3 lg:gap-16">
-            {/* Left: long-form content */}
-            <div className="space-y-12 lg:col-span-2">
-              {classData.description && (
+              {/* Event info card */}
+              <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm space-y-4">
+                <div className="flex items-start gap-4">
+                  <span className="text-xl mt-0.5" aria-hidden="true">📅</span>
+                  <div>
+                    <p className="font-semibold text-gray-900">{dateRange}</p>
+                    <p className="mt-0.5 text-sm text-gray-500">{weeksLabel}</p>
+                  </div>
+                </div>
+                {(classData!.meeting_days || timeRange) && (
+                  <>
+                    <div className="h-px bg-gray-100" />
+                    <div className="flex items-start gap-4">
+                      <span className="text-xl mt-0.5" aria-hidden="true">🕒</span>
+                      <div>
+                        {classData!.meeting_days && (
+                          <p className="font-semibold text-gray-900">{classData!.meeting_days}</p>
+                        )}
+                        <p className="mt-0.5 text-sm text-gray-500">
+                          {timeRange}
+                          {duration && ` · ${duration}`}
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                )}
+                {classData!.location_details && (
+                  <>
+                    <div className="h-px bg-gray-100" />
+                    <div className="flex items-start gap-4">
+                      <span className="text-xl mt-0.5" aria-hidden="true">📍</span>
+                      <p className="text-sm text-gray-600">{classData!.location_details}</p>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Description */}
+              {classData!.description && (
                 <section>
-                  <h2 className="mb-4 text-xl font-semibold text-gray-900">
+                  <h2 className="mb-4 text-2xl text-gray-900" style={TOMO}>
                     About this class
                   </h2>
                   <div className="space-y-4">
-                    {classData.description.split("\n\n").map((para, i) => (
-                      <p key={i} className="text-base leading-[1.8] text-gray-600">
+                    {classData!.description.split("\n\n").map((para, i) => (
+                      <p key={i} className="text-base leading-relaxed text-gray-600">
                         {para}
                       </p>
                     ))}
@@ -196,103 +180,96 @@ export default async function PublicClassPage({
                 </section>
               )}
 
-              <section>
-                <h2 className="mb-4 text-xl font-semibold text-gray-900">
-                  What you&apos;ll need
-                </h2>
-                <p className="text-base leading-[1.8] text-gray-600">
-                  {requirements}
-                </p>
-              </section>
-
-              {classData.host_blurb && (
+              {/* Host */}
+              {classData!.host_blurb && (
                 <section>
-                  <h2 className="mb-5 text-xl font-semibold text-gray-900">
+                  <h2 className="mb-4 text-2xl text-gray-900" style={TOMO}>
                     Meet your host
                   </h2>
-                  <div className="flex gap-5">
-                    {/* Avatar */}
-                    <div
-                      className="h-14 w-14 shrink-0 rounded-full flex items-center justify-center text-white text-xl font-bold"
-                      style={{ backgroundColor: accentColor }}
-                      aria-hidden="true"
-                    >
-                      {classData.title.charAt(0)}
+                  <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+                    <div className="flex gap-4">
+                      <div
+                        className="h-11 w-11 shrink-0 rounded-full flex items-center justify-center text-white text-lg font-bold"
+                        style={{ backgroundColor: accentColor }}
+                        aria-hidden="true"
+                      >
+                        {classData!.title.charAt(0)}
+                      </div>
+                      <p className="text-sm leading-relaxed text-gray-600 whitespace-pre-line">
+                        {classData!.host_blurb}
+                      </p>
                     </div>
-                    <p className="text-base leading-[1.8] text-gray-600 whitespace-pre-line">
-                      {classData.host_blurb}
-                    </p>
                   </div>
                 </section>
               )}
             </div>
 
-            {/* Right: sticky register card (desktop) */}
+            {/* Right: sticky enrollment card (desktop) */}
             <div className="hidden lg:block lg:col-span-1">
-              <div className="sticky top-24 space-y-3 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <span
-                    className="text-sm font-semibold"
-                    style={{ color: accentColor }}
-                  >
-                    {spotsLabel}
-                  </span>
-                  {classData.price && (
-                    <span className="text-sm font-semibold text-gray-900">{classData.price}</span>
+              <div className="sticky top-20 rounded-2xl border border-gray-100 bg-white p-6 shadow-md space-y-5">
+                <p className="text-lg leading-snug text-gray-900" style={TOMO}>
+                  {classData!.title}
+                </p>
+
+                <div className="space-y-2 text-sm">
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <span>📅</span>
+                    <span>{dateRange}</span>
+                  </div>
+                  {classData!.meeting_days && (
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <span>🕒</span>
+                      <span>
+                        {classData!.meeting_days}
+                        {timeRange && `, ${timeRange}`}
+                      </span>
+                    </div>
                   )}
                 </div>
-                <RegisterCTA classTitle={classData.title} isFull={isFull} />
-                <p className="text-center text-xs text-gray-400">
-                  Free account required to register.
-                </p>
+
+                <div className="h-px bg-gray-100" />
+
+                <div>
+                  <p
+                    className="mb-3 text-sm font-semibold"
+                    style={{ color: isFull ? "#999" : accentColor }}
+                  >
+                    {spotsLabel}
+                  </p>
+                  <RegisterCTA
+                    classId={id}
+                    classTitle={classData!.title}
+                    isFull={isFull}
+                    isLoggedIn={isLoggedIn}
+                    isRegistered={classData!.isRegistered}
+                  />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Mobile register CTA */}
-          <div className="lg:hidden pb-12">
-            <RegisterCTA classTitle={classData.title} isFull={isFull} />
+          {/* Mobile enrollment card */}
+          <div className="lg:hidden pb-16">
+            <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-md">
+              <p
+                className="mb-3 text-sm font-semibold"
+                style={{ color: isFull ? "#999" : accentColor }}
+              >
+                {spotsLabel}
+              </p>
+              <RegisterCTA
+                classId={id}
+                classTitle={classData!.title}
+                isFull={isFull}
+                isLoggedIn={isLoggedIn}
+                isRegistered={classData!.isRegistered}
+              />
+            </div>
           </div>
         </div>
       </main>
 
-      {/* ── Footer ────────────────────────────────────────── */}
-      <footer className="mt-auto border-t border-gray-100 bg-white px-6 py-8 md:px-12">
-        <div className="relative mx-auto flex max-w-7xl items-center justify-between md:justify-center">
-          <span className="text-sm text-gray-600 md:absolute md:left-0">
-            © Two Cents Club
-          </span>
-          <div className="flex gap-6">
-            <a
-              href="https://x.com/thetwocentsclub"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              X
-            </a>
-            <a
-              href="https://www.linkedin.com/company/two-cents-club/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              LinkedIn
-            </a>
-            <a
-              href="https://www.instagram.com/thetwocentsclub/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              Instagram
-            </a>
-          </div>
-          <span className="absolute right-0 text-sm text-gray-600 hidden md:block">
-            Restoring child-like curiosity
-          </span>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { formatDateRange, formatDuration, formatTimeRange } from "@/lib/format";
 import { getClassById } from "@/lib/class-queries";
 import { createClient } from "@/utils/supabase/server";
 import { RegisterButton } from "./register-button";
+import { TOMO } from "@/lib/constants";
 
 export default async function ClassDetailPage({
   params,
@@ -31,71 +32,88 @@ export default async function ClassDetailPage({
   const duration = formatDuration(classData.start_time, classData.end_time);
   const weeksLabel = `${classData.weeks} ${classData.weeks === 1 ? "week" : "weeks"}`;
   const spotsLabel = `${classData.spotsLeft} spot${classData.spotsLeft === 1 ? "" : "s"} left`;
-  const requirements = classData.requirements ?? "Nothing special required.";
 
   return (
-    <div className="mx-auto max-w-3xl space-y-10">
-      <section className="space-y-4">
-        <div className="space-y-1">
-          <p className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-            {classData.level}
-          </p>
-          <h1 className="text-4xl font-semibold text-gray-900">{classData.title}</h1>
+    <div className="mx-auto max-w-2xl space-y-8 pb-16">
+
+      {/* Hero */}
+      <div className="space-y-4">
+        <h1
+          className="text-4xl leading-tight text-gray-900"
+          style={TOMO}
+        >
+          {classData.title}
+        </h1>
+        <div className="flex flex-wrap gap-2 text-sm">
+          <span className="rounded-full bg-gray-100 px-3 py-1 font-medium text-gray-700">
+            {weeksLabel}
+          </span>
+          <span className="rounded-full bg-amber-50 px-3 py-1 font-medium text-amber-700">
+            {spotsLabel}
+          </span>
         </div>
-        <div className="flex flex-wrap gap-3 text-sm text-gray-700">
-          <span className="rounded-full bg-gray-200 px-3 py-1 font-medium">{weeksLabel}</span>
-          <span className="rounded-full bg-gray-200 px-3 py-1 font-medium">{spotsLabel}</span>
-          <span className="rounded-full bg-gray-200 px-3 py-1 font-medium">{classData.location_tag}</span>
+      </div>
+
+      {/* Event info — Partiful-style */}
+      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm space-y-4">
+        <div className="flex items-start gap-3">
+          <span className="text-xl leading-none mt-0.5">📅</span>
+          <div>
+            <p className="font-semibold text-gray-900">{dateRange}</p>
+            <p className="text-sm text-gray-500">{weeksLabel}</p>
+          </div>
         </div>
-      </section>
+        <div className="h-px bg-gray-100" />
+        <div className="flex items-start gap-3">
+          <span className="text-xl leading-none mt-0.5">🕒</span>
+          <div>
+            <p className="font-semibold text-gray-900">{classData.meeting_days}</p>
+            <p className="text-sm text-gray-500">
+              {timeRange} · {duration}
+            </p>
+          </div>
+        </div>
+      </div>
 
-      <section className="space-y-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-900">Details</h2>
-        <dl className="space-y-3 text-sm leading-6 text-gray-700">
-          <div>
-            <dt className="font-semibold text-gray-900">{classData.schedule_summary}:</dt>
-            <dd>{dateRange}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold text-gray-900">Time:</dt>
-            <dd>
-              {classData.meeting_days}, {timeRange} ({duration})
-            </dd>
-          </div>
-          <div>
-            <dt className="font-semibold text-gray-900">Location:</dt>
-            <dd>{classData.location_details}</dd>
-          </div>
-          <div>
-            <dt className="font-semibold text-gray-900">You will need:</dt>
-            <dd>{requirements}</dd>
-          </div>
-        </dl>
-      </section>
-
-      {classData.host_blurb ? (
-        <section className="space-y-3">
-          <h2 className="text-lg font-semibold text-gray-900">Meet the host</h2>
-          <p className="text-base leading-7 text-gray-700 whitespace-pre-line">
-            {classData.host_blurb}
-          </p>
-        </section>
-      ) : null}
-
+      {/* Description */}
       {classData.description ? (
         <section className="space-y-3">
-          <h2 className="text-lg font-semibold text-gray-900">The class</h2>
+          <h2
+            className="text-xl text-gray-900"
+            style={TOMO}
+          >
+            About this class
+          </h2>
           <p className="text-base leading-7 text-gray-700 whitespace-pre-line">
             {classData.description}
           </p>
         </section>
       ) : null}
 
-      <RegisterButton
-        classId={classData.id}
-        isRegistered={classData.isRegistered}
-        isFull={classData.spotsLeft === 0}
-      />
+      {/* Host */}
+      {classData.host_blurb ? (
+        <section className="space-y-3">
+          <h2
+            className="text-xl text-gray-900"
+            style={TOMO}
+          >
+            Meet your host
+          </h2>
+          <p className="text-base leading-7 text-gray-700 whitespace-pre-line">
+            {classData.host_blurb}
+          </p>
+        </section>
+      ) : null}
+
+      {/* Register CTA */}
+      <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
+        <p className="mb-4 text-sm text-gray-500">Spots are limited. Register to save yours.</p>
+        <RegisterButton
+          classId={classData.id}
+          isRegistered={classData.isRegistered}
+          isFull={classData.spotsLeft === 0}
+        />
+      </div>
     </div>
   );
 }

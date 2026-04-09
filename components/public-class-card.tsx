@@ -6,14 +6,13 @@ const ACCENT_COLORS = ["#C94256", "#4A90E2", "#4A9B8E", "#D97706"];
 
 type PublicClassCardProps = {
   id: string;
+  href?: string;
   title: string;
   imageUrl?: string | null;
   startDate: string;
   startTime: string;
   endTime: string;
-  meetingDays: string;
-  level: string;
-  locationTag: string;
+  meetingDays?: string | null;
   spotsLeft?: number;
   price?: string;
   accentIndex?: number;
@@ -23,14 +22,13 @@ type PublicClassCardProps = {
 
 export function PublicClassCard({
   id,
+  href,
   title,
   imageUrl,
   startDate,
   startTime,
   endTime,
   meetingDays,
-  level,
-  locationTag,
   spotsLeft,
   price,
   accentIndex = 0,
@@ -42,7 +40,7 @@ export function PublicClassCard({
   if (featured) {
     return (
       <Link
-        href={`/c/${id}`}
+        href={href ?? `/c/${id}`}
         className={cn(
           "group flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg",
           className
@@ -65,9 +63,6 @@ export function PublicClassCard({
           />
         )}
         <div className="flex flex-1 flex-col gap-3 p-5">
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
-            {level} &bull; {locationTag}
-          </p>
           <h3
             className="text-xl font-semibold leading-snug text-gray-900 group-hover:text-black"
             style={{ fontFamily: "var(--font-neue-montreal)" }}
@@ -120,9 +115,6 @@ export function PublicClassCard({
         />
       )}
       <div className="flex flex-col gap-2 p-4">
-        <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-          {level} &bull; {locationTag}
-        </p>
         <h3 className="text-base font-semibold leading-snug text-gray-900 group-hover:text-black">
           {title}
         </h3>

@@ -9,9 +9,7 @@ type ClassCardProps = {
   startDate: string;
   startTime: string;
   endTime: string;
-  meetingDays: string;
-  level: string;
-  locationTag: string;
+  meetingDays?: string | null;
   spotsLeft?: number;
   className?: string;
 };
@@ -24,8 +22,6 @@ export function ClassCard({
   startTime,
   endTime,
   meetingDays,
-  level,
-  locationTag,
   spotsLeft,
   className,
 }: ClassCardProps) {
@@ -45,12 +41,9 @@ export function ClassCard({
         />
       )}
       <div className="flex flex-col gap-3 p-4">
-        <div className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-          {level} • {locationTag}
-        </div>
         <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
         <div className="text-sm text-gray-600">
-          <div>{meetingDays}</div>
+          {meetingDays && <div>{meetingDays}</div>}
           <div>{formatDate(startDate)}</div>
           <div>{formatTimeRange(startTime, endTime)}</div>
         </div>

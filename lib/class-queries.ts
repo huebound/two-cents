@@ -1,4 +1,3 @@
-import type { Database } from "@/types/supabase";
 import { createClient as createServerClient } from "@/utils/supabase/server";
 
 const CLASS_SELECT_BASE = `
@@ -6,7 +5,6 @@ const CLASS_SELECT_BASE = `
   host_id,
   title,
   image_url,
-  level,
   weeks,
   total_spots,
   start_date,
@@ -15,9 +13,7 @@ const CLASS_SELECT_BASE = `
   end_time,
   meeting_days,
   schedule_summary,
-  location_tag,
   location_details,
-  requirements,
   host_blurb,
   description,
   created_at,
@@ -29,7 +25,6 @@ const CLASS_SELECT_WITH_JOIN = `
   host_id,
   title,
   image_url,
-  level,
   weeks,
   total_spots,
   start_date,
@@ -38,9 +33,7 @@ const CLASS_SELECT_WITH_JOIN = `
   end_time,
   meeting_days,
   schedule_summary,
-  location_tag,
   location_details,
-  requirements,
   host_blurb,
   description,
   created_at,
@@ -49,6 +42,10 @@ const CLASS_SELECT_WITH_JOIN = `
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 const MS_PER_WEEK = MS_PER_DAY * 7;
+
+function todayIso(): string {
+  return todayIso();
+}
 
 function parseDate(dateString: string) {
   const [year, month, day] = dateString.split('-').map(Number);
@@ -137,18 +134,15 @@ export type ClassRecord = {
   host_id: string | null;
   title: string;
   image_url: string | null;
-  level: "Beginner" | "Intermediate" | "Advanced";
   weeks: number;
-  total_spots: number;
+  total_spots: number | null;
   start_date: string;
   end_date: string;
   start_time: string;
   end_time: string;
-  meeting_days: string;
-  schedule_summary: string;
-  location_tag: string;
-  location_details: string;
-  requirements: string | null;
+  meeting_days: string | null;
+  schedule_summary: string | null;
+  location_details: string | null;
   host_blurb: string | null;
   description: string | null;
   created_at: string;
@@ -157,14 +151,19 @@ export type ClassRecord = {
 
 export type ClassWithMeta = ClassRecord & {
   registrationCount: number;
-  spotsLeft: number;
+  spotsLeft: number | null;
   isRegistered: boolean;
+};
+
+// price is not yet in the DB schema — kept as an optional client-side field
+export type ClassWithPrice = ClassWithMeta & {
+  price?: string;
 };
 
 function withMeta(record: ClassRecord, userId?: string | null): ClassWithMeta {
   const registrations = record.class_registrations ?? [];
   const registrationCount = registrations.length;
-  const spotsLeft = Math.max(record.total_spots - registrationCount, 0);
+  const spotsLeft = record.total_spots != null ? Math.max(record.total_spots - registrationCount, 0) : null;
   const isRegistered = userId
     ? registrations.some((registration) => registration.user_id === userId)
     : false;
@@ -210,7 +209,7 @@ export async function getUpcomingClasses(
   supabase: Supabase,
   userId: string,
 ): Promise<ClassWithMeta[]> {
-  const today = new Date().toISOString().split("T")[0];
+  const today = todayIso();
 
   const { data, error } = await supabase
     .from("classes")
@@ -230,7 +229,7 @@ export async function getRecentClasses(
   supabase: Supabase,
   userId: string,
 ): Promise<ClassWithMeta[]> {
-  const today = new Date().toISOString().split("T")[0];
+  const today = todayIso();
 
   const { data, error } = await supabase
     .from("classes")
@@ -250,12 +249,11 @@ export async function getDtlaClasses(
   supabase: Supabase,
   userId?: string | null,
 ): Promise<ClassWithMeta[]> {
-  const today = new Date().toISOString().split("T")[0];
+  const today = todayIso();
 
   const { data, error } = await supabase
     .from("classes")
     .select(CLASS_SELECT_BASE)
-    .eq("location_tag", "DTLA")
     .gte("start_date", today)
     .order("start_date", { ascending: true })
     .limit(12);
@@ -313,7 +311,7 @@ export async function getPublicClasses(
   supabase: Supabase,
   limit = 20,
 ): Promise<ClassWithMeta[]> {
-  const today = new Date().toISOString().split("T")[0];
+  const today = todayIso();
 
   const { data, error } = await supabase
     .from("classes")

@@ -28,7 +28,6 @@ export async function createClassAction(
   const imageUrl = formData.get("imageUrl")?.toString().trim() ?? "";
   const weeks = Number(formData.get("weeks"));
   const totalSpots = Number(formData.get("totalSpots"));
-  const level = formData.get("level")?.toString() ?? "";
   const startDate = formData.get("startDate")?.toString() ?? "";
   const endDate = formData.get("endDate")?.toString() ?? "";
   const startTime = formData.get("startTime")?.toString() ?? "";
@@ -36,10 +35,7 @@ export async function createClassAction(
   const normalizedStartTime = startTime.length === 5 ? `${startTime}:00` : startTime;
   const normalizedEndTime = endTime.length === 5 ? `${endTime}:00` : endTime;
   const meetingDays = formData.get("meetingDays")?.toString().trim() ?? "";
-  const scheduleSummary = formData.get("scheduleSummary")?.toString().trim() ?? "";
-  const locationTag = formData.get("locationTag")?.toString() ?? "";
   const locationDetails = formData.get("locationDetails")?.toString().trim() ?? "";
-  const requirementsRaw = formData.get("requirements")?.toString().trim() ?? "";
   const hostBlurb = formData.get("hostBlurb")?.toString().trim() ?? "";
   const description = formData.get("description")?.toString().trim() ?? "";
 
@@ -51,12 +47,8 @@ export async function createClassAction(
     return { status: "error", message: "Weeks must be a positive number." };
   }
 
-  if (!Number.isFinite(totalSpots) || totalSpots <= 0) {
+  if (totalSpots !== 0 && (!Number.isFinite(totalSpots) || totalSpots < 0)) {
     return { status: "error", message: "Total spots must be a positive number." };
-  }
-
-  if (!["Beginner", "Intermediate", "Advanced"].includes(level)) {
-    return { status: "error", message: "Select a valid level." };
   }
 
   if (!startDate || !endDate) {
@@ -75,31 +67,9 @@ export async function createClassAction(
     return { status: "error", message: "End time must be after start time." };
   }
 
-  if (!meetingDays) {
-    return { status: "error", message: "Meeting days are required." };
-  }
-
-  if (!scheduleSummary) {
-    return { status: "error", message: "Provide a schedule summary." };
-  }
-
-  if (locationTag !== "DTLA") {
-    return { status: "error", message: "Location tag must be DTLA." };
-  }
-
-  if (!locationDetails) {
-    return { status: "error", message: "Location details are required." };
-  }
-
-  if (!hostBlurb) {
-    return { status: "error", message: "Please add a host introduction." };
-  }
-
   if (!description) {
     return { status: "error", message: "Please add a class description." };
   }
-
-  const requirements = requirementsRaw.length > 0 ? requirementsRaw : null;
 
   const { data, error } = await supabase
     .from("classes")
@@ -107,19 +77,15 @@ export async function createClassAction(
       host_id: user.id,
       title,
       image_url: imageUrl.length > 0 ? imageUrl : null,
-      level,
       weeks,
-      total_spots: totalSpots,
+      total_spots: totalSpots > 0 ? totalSpots : null,
       start_date: startDate,
       end_date: endDate,
       start_time: normalizedStartTime,
       end_time: normalizedEndTime,
-      meeting_days: meetingDays,
-      schedule_summary: scheduleSummary,
-      location_tag: locationTag,
-      location_details: locationDetails,
-      requirements,
-      host_blurb: hostBlurb,
+      meeting_days: meetingDays.length > 0 ? meetingDays : null,
+      location_details: locationDetails.length > 0 ? locationDetails : null,
+      host_blurb: hostBlurb.length > 0 ? hostBlurb : null,
       description,
     } as never)
     .select("id")

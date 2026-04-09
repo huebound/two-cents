@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 type RegisterConfirmDialogProps = {
@@ -21,10 +21,10 @@ export function RegisterConfirmDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Registration confirmed</DialogTitle>
+          <DialogDescription>
+            You&apos;re in! We&apos;ll see you at the class.
+          </DialogDescription>
         </DialogHeader>
-        <p className="text-sm text-gray-600">
-          You&apos;re in! We&apos;ll see you at the class.
-        </p>
         <DialogFooter>
           <Button onClick={onConfirm} disabled={isSubmitting} className="w-full sm:w-auto">
             OK

@@ -1,51 +1,107 @@
-import Link from "next/link";
-import { Bell } from "lucide-react";
-import { cn } from "@/lib/utils";
+"use client";
 
-type AppNavbarProps = {
+import Link from "next/link";
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { AuthDialog } from "@/components/auth-dialog";
+import { createClient } from "@/utils/supabase/client";
+import { TOMO } from "@/lib/constants";
+
+type SiteNavbarProps = {
+  isLoggedIn?: boolean;
   firstName?: string | null;
 };
 
-export function AppNavbar({ firstName }: AppNavbarProps) {
-  const profileInitial = firstName?.charAt(0)?.toUpperCase() ?? "?";
+export function SiteNavbar({ isLoggedIn, firstName }: SiteNavbarProps) {
+  const [authOpen, setAuthOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [visible, setVisible] = useState(true);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const lastScrollY = useRef(0);
+  const router = useRouter();
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    function handleScroll() {
+      const currentY = window.scrollY;
+      setVisible(currentY < lastScrollY.current || currentY < 10);
+      lastScrollY.current = currentY;
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/");
+    router.refresh();
+  };
 
   return (
-    <header className="border-b border-gray-200 bg-white">
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6">
-        <Link href="/home" className="text-lg font-medium tracking-tight">
-          Two Cents Club
+    <header className={`sticky top-0 z-50 bg-white/95 backdrop-blur-sm transition-transform duration-300 ${visible ? "translate-y-0" : "-translate-y-full"}`}>
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between">
+        {/* Logo */}
+        <Link href={isLoggedIn ? "/home" : "/"} className="flex items-center gap-2.5">
+          <img
+            src="/images/2C-Landing-Assets/googly-eye.png"
+            alt=""
+            className="h-7 w-7"
+          />
+          <span className="font-medium text-black text-[17px]" style={TOMO}>
+            Two Cents Club
+          </span>
         </Link>
 
-        <nav className="flex items-center gap-6 text-sm font-medium text-gray-700">
-          <Link href="/home" className="transition hover:text-black">
-            Discover
-          </Link>
-          <Link href="/classes" className="transition hover:text-black">
-            Classes
-          </Link>
-          <Link href="/teach" className="transition hover:text-black">
-            Teach
-          </Link>
-          <button
-            type="button"
-            className="rounded-full p-1.5 text-gray-500 transition hover:bg-gray-100 hover:text-black"
-            aria-label="Notifications"
-          >
-            <Bell className="h-5 w-5" />
-          </button>
-          <Link
-            href="/profile"
-            className={cn(
-              "flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 bg-gray-100 text-sm font-semibold text-gray-700 transition hover:border-black hover:text-black",
-            )}
-            aria-label="Profile"
-          >
-            {profileInitial}
-          </Link>
-        </nav>
+        {isLoggedIn ? (
+          <nav className="flex items-center gap-4">
+            <div ref={menuRef} className="relative">
+              <button
+                className="cursor-pointer font-medium text-black text-sm md:text-[18px]"
+                style={TOMO}
+                onClick={() => setMenuOpen((o) => !o)}
+              >
+                Hi, {firstName ? `${firstName}!` : "there"}
+              </button>
+              {menuOpen && (
+                <div className="absolute right-0 top-full mt-2 w-28 rounded-xl border border-gray-100 bg-white py-1 shadow-md">
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full px-4 py-2 text-left text-sm text-gray-600 hover:bg-gray-50"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          </nav>
+        ) : (
+          <>
+            <AuthDialog open={authOpen} onOpenChange={setAuthOpen} />
+            <nav className="flex items-center gap-5 md:gap-8">
+              <button
+                className="cursor-pointer font-medium text-black hover:underline text-sm md:text-[18px]"
+                style={TOMO}
+                onClick={() => setAuthOpen(true)}
+              >
+                Join the Club
+              </button>
+            </nav>
+          </>
+        )}
       </div>
     </header>
   );
 }
 
-export default AppNavbar;
+export { SiteNavbar as AppNavbar };
+export default SiteNavbar;

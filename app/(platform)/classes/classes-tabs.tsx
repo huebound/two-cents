@@ -2,11 +2,13 @@
 
 import Link from "next/link";
 import { useActionState, useState } from "react";
-import { formatDate, formatDateRange, formatTimeRange } from "@/lib/format";
+import { formatDateRange, formatTimeRange } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { updateClassDetailsAction, type UpdateClassFormState } from "./update-class-action";
 import { deleteClassAction, type DeleteClassState } from "./delete-class-action";
+import { TOMO } from "@/lib/constants";
+import { EmptyState } from "@/components/empty-state";
 
 const INITIAL_UPDATE_STATE: UpdateClassFormState = { status: "idle" };
 const INITIAL_DELETE_STATE: DeleteClassState = { status: "idle" };
@@ -15,8 +17,6 @@ type UpcomingSession = {
   sessionId: string;
   classId: string;
   title: string;
-  level: string;
-  locationTag: string;
   meetingDays: string;
   startTime: string;
   endTime: string;
@@ -39,12 +39,7 @@ type TeachingActiveClass = {
   title: string;
   startDate: string;
   endDate: string;
-  level: string;
-  locationTag: string;
-  scheduleSummary: string;
   meetingDays: string;
-  locationDetails: string;
-  requirements: string;
   description: string;
   hostBlurb: string;
   spotsLeft: number;
@@ -67,134 +62,108 @@ type ClassesTabsProps = {
   counts: Record<TabKey, number>;
 };
 
-const tabs: { key: TabKey; label: string }[] = [
-  { key: "upcoming", label: "Upcoming" },
-  { key: "teaching", label: "Teaching" },
-  { key: "attended", label: "Attended" },
+const tabs: { key: TabKey; label: string; icon: string }[] = [
+  { key: "upcoming",  label: "Attending", icon: "📋" },
+  { key: "teaching",  label: "Teaching",  icon: "🍎" },
+  { key: "attended",  label: "Completed", icon: "📚" },
 ];
 
+// ── Date block ────────────────────────────────────────────────────────────────
+function SessionDateBlock({ isoDate }: { isoDate: string }) {
+  const date = new Date(isoDate + "T00:00:00");
+  const month = date.toLocaleString("en-US", { month: "short" }).toUpperCase();
+  const day = date.getDate();
+  return (
+    <div className="flex w-12 shrink-0 flex-col items-center justify-center rounded-xl bg-[#C94256]/8 py-2">
+      <span className="text-[9px] font-bold uppercase tracking-widest text-[#C94256]">{month}</span>
+      <span className="text-xl font-bold leading-tight text-gray-900">{day}</span>
+    </div>
+  );
+}
+
+// ── Upcoming tab ─────────────────────────────────────────────────────────────
 function UpcomingTab({ sessions }: { sessions: UpcomingSession[] }) {
   if (sessions.length === 0) {
     return (
-      <p className="text-sm text-gray-500">
-        No upcoming sessions yet. Register for a class and your schedule will show up here.
-      </p>
+      <EmptyState
+        emoji="🗓️"
+        title="Nothing on the schedule yet"
+        description="Register for a class and your sessions will appear here."
+        action={{ href: "/discover", label: "Browse classes" }}
+      />
     );
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2">
+    <div className="space-y-2.5">
       {sessions.map((session) => (
         <Link
           key={session.sessionId}
           href={`/classes/${session.classId}`}
-          className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+          className="flex items-center gap-4 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
         >
-          <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-gray-500">
-            <span>
-              {session.level} • {session.locationTag}
-            </span>
-            <span>
+          <SessionDateBlock isoDate={session.sessionDate} />
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-semibold text-gray-900">{session.title}</p>
+            <p className="mt-0.5 text-sm text-gray-500">
+              {formatTimeRange(session.startTime, session.endTime)}
+            </p>
+            <p className="mt-0.5 text-xs text-gray-400">
               Session {session.sessionIndex} of {session.totalOccurrences}
-            </span>
+            </p>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900">{session.title}</h3>
-          <p className="text-sm text-gray-600">
-            {formatDate(session.sessionDate)} • {formatTimeRange(session.startTime, session.endTime)}
-          </p>
-          <p className="text-sm text-gray-600">{session.meetingDays}</p>
-          <p className="text-sm font-medium text-gray-900">
-            {session.spotsLeft} spot{session.spotsLeft === 1 ? "" : "s"} left
-          </p>
+          {session.spotsLeft != null && (
+            <span className="shrink-0 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700">
+              {session.spotsLeft} left
+            </span>
+          )}
         </Link>
       ))}
     </div>
   );
 }
 
+// ── Attended tab ─────────────────────────────────────────────────────────────
 function AttendedTab({ history }: { history: AttendedHistoryItem[] }) {
   if (history.length === 0) {
     return (
-      <p className="text-sm text-gray-500">
-        Classes you&apos;ve taken will appear here once they begin.
-      </p>
+      <EmptyState
+        emoji="📖"
+        title="Your transcript is empty for now"
+        description="Classes you've finished will appear here."
+      />
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
-      <table className="min-w-full divide-y divide-gray-200 text-sm">
-        <thead className="bg-gray-50 text-left font-semibold text-gray-600">
-          <tr>
-            <th className="px-4 py-3">Class</th>
-            <th className="px-4 py-3">Dates</th>
-            <th className="px-4 py-3">Status</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-100">
-          {history.map((item) => (
-            <tr key={item.id} className="text-gray-700">
-              <td className="px-4 py-3 font-medium text-gray-900">{item.title}</td>
-              <td className="px-4 py-3 text-gray-600">
-                {formatDateRange(item.startDate, item.endDate)}
-              </td>
-              <td className="px-4 py-3">
-                <span
-                  className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                    item.status === "Completed"
-                      ? "bg-emerald-100 text-emerald-700"
-                      : "bg-amber-100 text-amber-700"
-                  }`}
-                >
-                  {item.status}
-                </span>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function TeachingActiveList({ classes }: { classes: TeachingActiveClass[] }) {
-  if (classes.length === 0) {
-    return (
-      <p className="text-sm text-gray-500">
-        When you publish a class, you&apos;ll manage it here.
-      </p>
-    );
-  }
-
-  return (
-    <div className="space-y-8">
-      {classes.map((classItem) => (
-        <TeachingEditor key={classItem.id} classItem={classItem} />
+    <div className="space-y-2">
+      {history.map((item) => (
+        <div
+          key={item.id}
+          className="flex items-center justify-between rounded-xl border border-gray-100 bg-white px-5 py-4"
+        >
+          <div>
+            <p className="font-semibold text-gray-900">{item.title}</p>
+            <p className="mt-0.5 text-sm text-gray-500">
+              {formatDateRange(item.startDate, item.endDate)}
+            </p>
+          </div>
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-semibold ${
+              item.status === "Completed"
+                ? "bg-emerald-50 text-emerald-700"
+                : "bg-amber-50 text-amber-700"
+            }`}
+          >
+            {item.status}
+          </span>
+        </div>
       ))}
     </div>
   );
 }
 
-function TeachingPastList({ classes }: { classes: TeachingPastClass[] }) {
-  if (classes.length === 0) {
-    return null;
-  }
-
-  return (
-    <div className="space-y-3">
-      <h3 className="text-sm font-semibold text-gray-700">Past courses</h3>
-      <ul className="space-y-2 text-sm text-gray-600">
-        {classes.map((classItem) => (
-          <li key={classItem.id} className="flex items-center justify-between rounded-lg border border-gray-200 bg-white px-4 py-2">
-            <span className="font-medium text-gray-900">{classItem.title}</span>
-            <span>{classItem.dateRange}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
+// ── Teaching tab ─────────────────────────────────────────────────────────────
 function TeachingTab({
   active,
   past,
@@ -202,14 +171,46 @@ function TeachingTab({
   active: TeachingActiveClass[];
   past: TeachingPastClass[];
 }) {
+  if (active.length === 0 && past.length === 0) {
+    return (
+      <EmptyState
+        emoji="🍎"
+        title="Nothing to manage yet"
+        description="When you publish a class, it will appear here."
+        action={{ href: "/teach", label: "Create a class", variant: "red" }}
+      />
+    );
+  }
+
   return (
     <div className="space-y-8">
-      <TeachingActiveList classes={active} />
-      <TeachingPastList classes={past} />
+      {active.map((cls) => (
+        <TeachingEditor key={cls.id} classItem={cls} />
+      ))}
+
+      {past.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">
+            Past courses
+          </h3>
+          <ul className="space-y-2">
+            {past.map((cls) => (
+              <li
+                key={cls.id}
+                className="flex items-center justify-between rounded-xl border border-gray-100 bg-white px-5 py-3 text-sm"
+              >
+                <span className="font-medium text-gray-900">{cls.title}</span>
+                <span className="text-gray-500">{cls.dateRange}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }
 
+// ── Teaching editor ───────────────────────────────────────────────────────────
 function TeachingEditor({ classItem }: { classItem: TeachingActiveClass }) {
   const [state, formAction, isPending] = useActionState(
     updateClassDetailsAction,
@@ -221,104 +222,100 @@ function TeachingEditor({ classItem }: { classItem: TeachingActiveClass }) {
   );
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+  const enrolledCount = classItem.totalSpots - classItem.spotsLeft;
+  const capacityLabel = classItem.totalSpots
+    ? `${enrolledCount} / ${classItem.totalSpots} enrolled`
+    : `${enrolledCount} enrolled`;
+
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-      <div className="flex flex-col gap-1 pb-4">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-xl font-semibold text-gray-900">{classItem.title}</h2>
-          <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-            {classItem.level} • {classItem.locationTag}
+    <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm space-y-5">
+      {/* Class meta */}
+      <div>
+        <div className="flex items-start justify-between gap-4">
+          <h2 className="text-xl font-semibold text-gray-900" style={TOMO}>
+            {classItem.title}
+          </h2>
+          <span className="shrink-0 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+            Active
           </span>
         </div>
-        <p className="text-sm text-gray-600">
-          {formatDateRange(classItem.startDate, classItem.endDate)} • {classItem.meetingDays}
+        <p className="mt-1 text-sm text-gray-500">
+          {formatDateRange(classItem.startDate, classItem.endDate)}
+          {classItem.meetingDays ? ` · ${classItem.meetingDays}` : ""}
         </p>
-        <p className="text-sm text-gray-600">
-          {classItem.scheduleSummary} • {classItem.totalSpots - classItem.spotsLeft} / {classItem.totalSpots} seats filled
-        </p>
+        <p className="mt-0.5 text-sm font-medium text-gray-700">{capacityLabel}</p>
       </div>
 
-      <form action={formAction} className="space-y-5">
+      <div className="h-px bg-gray-100" />
+
+      {/* Edit form */}
+      <form action={formAction} className="space-y-4">
         <input type="hidden" name="classId" value={classItem.id} />
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
-            Schedule label
-            <Input name="scheduleSummary" defaultValue={classItem.scheduleSummary} required />
-          </label>
-          <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
-            Meeting days
-            <Input name="meetingDays" defaultValue={classItem.meetingDays} required />
-          </label>
-        </div>
-
-        <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
-          Location details
-          <Input name="locationDetails" defaultValue={classItem.locationDetails} required />
+        <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
+          Meeting days
+          <Input name="meetingDays" defaultValue={classItem.meetingDays} />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
-          What learners should bring
-          <Input name="requirements" defaultValue={classItem.requirements} placeholder="Optional" />
-        </label>
-
-        <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
+        <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
           Host introduction
           <textarea
             name="hostBlurb"
             defaultValue={classItem.hostBlurb}
             rows={3}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm shadow-xs focus-visible:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20"
+            className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm shadow-sm focus:border-[#C94256] focus:outline-none focus:ring-2 focus:ring-[#C94256]/20 transition resize-none"
           />
         </label>
 
-        <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
+        <label className="flex flex-col gap-1.5 text-sm font-medium text-gray-700">
           Class description
           <textarea
             name="description"
             defaultValue={classItem.description}
             rows={4}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm shadow-xs focus-visible:border-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/20"
             required
+            className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm shadow-sm focus:border-[#C94256] focus:outline-none focus:ring-2 focus:ring-[#C94256]/20 transition resize-none"
           />
         </label>
 
-        {state.status === "error" ? (
+        {state.status === "error" && (
           <p className="text-sm text-red-600">{state.message}</p>
-        ) : null}
+        )}
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3 pt-1">
           <div className="flex items-center gap-3">
             <Button type="submit" disabled={isPending || isDeleting}>
-              {isPending ? "Saving..." : "Save changes"}
+              {isPending ? "Saving…" : "Save changes"}
             </Button>
-            {isPending ? null : state.status === "success" ? (
-              <span className="text-sm text-emerald-600">Saved.</span>
-            ) : null}
+            {!isPending && state.status === "success" && (
+              <span className="text-sm text-emerald-600">Saved ✓</span>
+            )}
           </div>
 
-          {!showDeleteConfirm ? (
+          {!showDeleteConfirm && (
             <Button
               type="button"
-              variant="destructive"
+              variant="ghost"
+              className="text-red-500 hover:text-red-700 hover:bg-red-50"
               onClick={() => setShowDeleteConfirm(true)}
               disabled={isPending || isDeleting}
             >
               Delete class
             </Button>
-          ) : null}
+          )}
         </div>
       </form>
 
-      {showDeleteConfirm ? (
-        <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4">
+      {/* Delete confirm */}
+      {showDeleteConfirm && (
+        <div className="rounded-xl border border-red-100 bg-red-50 p-4">
           <p className="mb-3 text-sm font-medium text-red-900">
-            Are you sure you want to delete this class? This action cannot be undone.
+            Delete this class? This action cannot be undone.
           </p>
           <form action={deleteAction} className="flex items-center gap-3">
             <input type="hidden" name="classId" value={classItem.id} />
             <Button type="submit" variant="destructive" disabled={isDeleting}>
-              {isDeleting ? "Deleting..." : "Yes, delete"}
+              {isDeleting ? "Deleting…" : "Yes, delete"}
             </Button>
             <Button
               type="button"
@@ -329,15 +326,16 @@ function TeachingEditor({ classItem }: { classItem: TeachingActiveClass }) {
               Cancel
             </Button>
           </form>
-          {deleteState.status === "error" ? (
+          {deleteState.status === "error" && (
             <p className="mt-2 text-sm text-red-600">{deleteState.message}</p>
-          ) : null}
+          )}
         </div>
-      ) : null}
+      )}
     </div>
   );
 }
 
+// ── Root component ────────────────────────────────────────────────────────────
 export default function ClassesTabs({
   upcomingSessions,
   attendedHistory,
@@ -345,26 +343,28 @@ export default function ClassesTabs({
   teachingPast,
   counts,
 }: ClassesTabsProps) {
-  const initialTab: TabKey = upcomingSessions.length > 0
-    ? "upcoming"
-    : teachingActive.length > 0 || teachingPast.length > 0
-      ? "teaching"
-      : attendedHistory.length > 0
-        ? "attended"
+  const initialTab: TabKey =
+    upcomingSessions.length > 0
+      ? "upcoming"
+      : teachingActive.length > 0 || teachingPast.length > 0
+        ? "teaching"
         : "upcoming";
 
   const [activeTab, setActiveTab] = useState<TabKey>(initialTab);
 
   return (
-    <div className="space-y-8">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-semibold text-gray-900">Your Classes</h1>
-        <p className="text-sm text-gray-600">
-          Track the sessions you&apos;re attending, revisit past classes, and manage everything you teach.
+    <div className="space-y-7">
+      <div className="space-y-1">
+        <h1 className="text-3xl font-bold text-gray-900" style={TOMO}>
+          My Classes
+        </h1>
+        <p className="text-sm text-gray-500">
+          Your schedule, history, and everything you teach.
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      {/* Tab bar */}
+      <div className="flex flex-wrap gap-2">
         {tabs.map((tab) => {
           const count = counts[tab.key];
           const isActive = activeTab === tab.key;
@@ -373,27 +373,43 @@ export default function ClassesTabs({
               key={tab.key}
               type="button"
               onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition ${
+              className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-all ${
                 isActive
-                  ? "border-black bg-black text-white"
-                  : "border-gray-300 bg-white text-gray-700 hover:border-gray-400"
+                  ? "border-black bg-black text-white shadow-sm"
+                  : "border-gray-200 bg-white text-gray-600 hover:border-gray-400"
               }`}
             >
+              <span aria-hidden="true">{tab.icon}</span>
               <span>{tab.label}</span>
-              <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs">
+              <span
+                className={`rounded-full px-1.5 py-0.5 text-xs ${
+                  isActive
+                    ? "bg-white/20 text-white"
+                    : "bg-gray-100 text-gray-500"
+                }`}
+              >
                 {count}
               </span>
             </button>
           );
         })}
+
+        {/* Teach CTA */}
+        <Link
+          href="/teach"
+          className="ml-auto flex items-center gap-1.5 rounded-full bg-[#C94256] px-4 py-2 text-sm font-medium text-white hover:bg-[#a33045] transition-colors"
+        >
+          + New class
+        </Link>
       </div>
 
-      <div className="space-y-6">
-        {activeTab === "upcoming" ? <UpcomingTab sessions={upcomingSessions} /> : null}
-        {activeTab === "teaching" ? (
+      {/* Tab content */}
+      <div>
+        {activeTab === "upcoming" && <UpcomingTab sessions={upcomingSessions} />}
+        {activeTab === "teaching" && (
           <TeachingTab active={teachingActive} past={teachingPast} />
-        ) : null}
-        {activeTab === "attended" ? <AttendedTab history={attendedHistory} /> : null}
+        )}
+        {activeTab === "attended" && <AttendedTab history={attendedHistory} />}
       </div>
     </div>
   );

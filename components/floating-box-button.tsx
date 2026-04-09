@@ -14,9 +14,10 @@ export default function FloatingBoxButton() {
       <Image
         src="/images/2C-Landing-Assets/box-top.svg"
         alt="Two Cents Club Substack"
-        width={150}
-        height={150}
+        width={130}
+        height={130}
         className="group-hover:animate-jitter cursor-pointer"
+        style={{ height: "auto"}}
         priority={false}
       />
     </a>

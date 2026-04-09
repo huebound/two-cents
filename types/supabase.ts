@@ -56,11 +56,8 @@ export type Database = {
           host_id: string | null
           id: string
           image_url: string | null
-          level: string
           location_details: string
-          location_tag: string
           meeting_days: string
-          requirements: string | null
           schedule_summary: string
           start_date: string
           start_time: string
@@ -78,11 +75,8 @@ export type Database = {
           host_id?: string | null
           id?: string
           image_url?: string | null
-          level: string
           location_details: string
-          location_tag: string
           meeting_days: string
-          requirements?: string | null
           schedule_summary: string
           start_date: string
           start_time: string
@@ -100,11 +94,8 @@ export type Database = {
           host_id?: string | null
           id?: string
           image_url?: string | null
-          level?: string
           location_details?: string
-          location_tag?: string
           meeting_days?: string
-          requirements?: string | null
           schedule_summary?: string
           start_date?: string
           start_time?: string
