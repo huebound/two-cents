@@ -49,7 +49,7 @@ export function SiteNavbar({ isLoggedIn, firstName }: SiteNavbarProps) {
 
   return (
     <header className={`sticky top-0 z-50 bg-white/95 backdrop-blur-sm transition-transform duration-300 ${visible ? "translate-y-0" : "-translate-y-full"}`}>
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 md:px-6">
         {/* Logo */}
         <Link href={isLoggedIn ? "/home" : "/"} className="flex items-center gap-2.5">
           <img
