@@ -77,7 +77,7 @@ export default async function PublicClassPage({
           )}
 
           {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/0 to-transparent" />
 
           {/* Accent bar */}
           <div

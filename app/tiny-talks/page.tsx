@@ -55,7 +55,7 @@ export default async function TinyTalksPage() {
             />
           )}
 
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/0 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 h-1" style={{ backgroundColor: ACCENT_COLOR }} />
 
           <div className="absolute bottom-0 left-0 right-0 px-6 pb-8 md:pb-10">
